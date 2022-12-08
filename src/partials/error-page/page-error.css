@@ -1,0 +1,18 @@
+.wrapper-page-error {
+    @include pageWrapper;
+}
+
+.content-page-error {
+    @include flex-central-vertical;
+
+    &__paragraph {
+        margin-top: 20px;
+        margin-bottom: 69px;
+        @include setFontSize(20px, 500);
+    }
+
+    &__title {
+        text-align: center;
+        @include setFontSize(40px, 500);
+    }
+}

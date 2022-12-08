@@ -1,0 +1,134 @@
+.label-for-popup {
+    @include flex-center;
+
+    cursor: pointer;
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    background-color: rgba(239, 239, 239, 1);
+    position: relative;
+
+    &:hover::after {
+        @include flex-center;
+        @include setFontSize(16px, 500);
+
+        content: 'Поменять аватар';
+        width: inherit;
+        height: inherit;
+        position: absolute;
+        top: 0;
+        left: 0;
+        border-radius: 50%;
+        text-align: center;
+        background-color: rgba(0, 0, 0, 0.5);
+        color: $background-form;
+    }
+
+    & + .user-name {
+        margin-top: 21px;
+        text-align: center;
+    }
+}
+
+.popup {
+    &__state {
+        display: none;
+    }
+
+    &__state:checked + &__wrapper {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    &__wrapper {
+        @include flex-center;
+        position: fixed;
+        top: 0;
+        left: 0;
+        opacity: 0;
+        width: 100vw;
+        height: 100vh;
+        visibility: hidden;
+        background-color: rgba(0, 0, 0, 0.4);
+        transition: opacity 0.3s ease-in-out;
+        text-align: center;
+    }
+
+    &__bg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: inherit;
+        height: inherit;
+        z-index: 5;
+    }
+}
+
+.form-for-avatar {
+    @include popup;
+
+    &__title {
+        @include setFontSize(15px, 500);
+
+        &_error {
+            color: $color-error;
+        }
+    }
+
+    &__label {
+        @include setFontSize(12px, 500);
+        color: $color-link;
+        text-decoration: underline;
+        width: 122px;
+        word-wrap: normal;
+        display: flex;
+        cursor: pointer;
+    }
+
+    &__input {
+        display: none;
+    }
+
+    .button-submit {
+        margin: 0;
+    }
+}
+/*
+#load-avatar {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    display: none;
+}
+
+.load-avatar-label {
+    @include flex-center;
+
+    cursor: pointer;
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    background-color: rgba(239, 239, 239, 1);
+    position: relative;
+
+    &:hover::after {
+        @include flex-center;
+        @include setFontSize(16px, 500);
+
+        content: 'Поменять аватар';
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        border-radius: 50%;
+        text-align: center;
+        background-color: rgba(0, 0, 0, 0.5);
+        color: $background-form;
+    }
+}
+
+#form-for-avatar {
+    display: flex;
+}
+*/

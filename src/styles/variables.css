@@ -1,0 +1,11 @@
+$color-link: rgba(51, 105, 243, 1);
+$color-placeholder: rgba(153, 153, 153, 1);
+$color-error: rgba(255, 47, 47, 1);
+$background-form: rgba(255, 255, 255, 1);
+$color-profile-border: rgba(234, 234, 234, 1);
+$color-active-chat: rgba(228, 237, 253, 1);
+$color-border-chat: rgba(234, 234, 234, 1);
+$color-hover-chat: rgba(244, 244, 245, 1);
+$color-background-chat-in: rgba(248, 248, 248, 1);
+$color-background-chat-out: rgba(228, 237, 253, 1);
+$color-background-time: rgba(82, 82, 82, 0.5);

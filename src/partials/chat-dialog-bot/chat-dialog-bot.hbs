@@ -1,0 +1,45 @@
+<div class="chat__dialog-bot chat__dialog-row">
+    <div class="chat__dialog-attach">
+        <button class="dialog-attach__icon">
+            <img src="../asserts/attach.png" alt="attach">
+        </button>
+        <div class="chat__modal chat__modal-attach">
+            <div class="chat__modal-item">
+                <label for="attach-media" class="chat__modal-label">
+                    <div class="chat__modal-icon">
+                        <img src="../asserts/photo_blue.png" alt="photo">
+                    </div>
+                    <p class="chat__modal-text">Фото или Видео</p>
+                </label>
+                <input type="file" class="chat__modal-input" id="attach-media"  accept="image/*, video/*">
+            </div>
+            <div class="chat__modal-item">
+                <label for="attach-file" class="chat__modal-label">
+                    <div class="chat__modal-icon">
+                        <img src="../asserts/file.png" alt="file">
+                    </div>
+                    <p class="chat__modal-text">Файл</p>
+                </label>
+                <input type="file" class="chat__modal-input" id="attach-file" multiple>
+            </div>
+            <div class="chat__modal-item">
+                <button id="geolocation" class="chat__modal-label">
+                    <div class="chat__modal-icon">
+                        <img src="../asserts/geolocation.png" alt="geolocation">
+                    </div>
+                    <p class="chat__modal-text">Локация</p>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="chat__dialog-write">
+        <input type="text" id="chat__dialog-write" class="dialog-write__input" placeholder="Сообщение">
+        <button  class="dialog-write__button button">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="14" cy="14" r="14" fill="#3369F3"/>
+                <rect x="8" y="13.2" width="11" height="1.6" fill="white"/>
+                <path d="M15 9L19 14L15 19" stroke="white" stroke-width="1.6"/>
+        </svg>
+        </button>
+    </div>
+</div>

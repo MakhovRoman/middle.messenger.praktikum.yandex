@@ -1,0 +1,13 @@
+.popup {
+    &__container {
+        @include popup;
+
+        & .button-submit {
+            margin: 0;
+        }
+    }
+
+    &__input {
+        width: 100%;
+    }
+}

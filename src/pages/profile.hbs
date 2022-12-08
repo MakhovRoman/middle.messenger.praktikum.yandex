@@ -1,0 +1,22 @@
+---
+text: 'Поменять'
+user-name_display: 'visible'
+status-email: 'disabled'
+status-login: 'disabled'
+status-first_name: 'disabled'
+status-second_name: 'disabled'
+status-display_name: 'disabled'
+status-phone: 'disabled'
+status-link-change-data: 'flex'
+status-link-change-password: 'flex'
+status-profile-exit: 'flex'
+status-submit: 'none'
+---
+{{!< desktop}}
+
+<section class="profile">
+    <div class="profile__avatar">
+        {{> 'profile-wrapper/profile-wrapper'}}
+    </div>
+    {{> 'profile-data/profile-data'}}
+</section>
