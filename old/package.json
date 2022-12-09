@@ -2,6 +2,7 @@
   "devDependencies": {
     "@anikin/parcel-transformer-handlebars": "^1.0.9",
     "autoprefixer": "^10.4.13",
+    "express": "^4.18.2",
     "parcel": "^2.8.0",
     "postcss": "^8.4.19",
     "postcss-import": "^15.0.1",
@@ -9,9 +10,6 @@
   },
   "name": "module_1",
   "version": "1.0.0",
-  "dependencies": {
-
-  },
   "scripts": {
     "dev": "parcel src/pages/index.hbs --no-cache",
     "start": "parcel build src/pages/index.hbs && node ./server.js",
@@ -19,7 +17,7 @@
     "build": "parcel build src/pages/index.hbs"
   },
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=12.0.0"
   },
   "keywords": [],
   "author": "Roman Makhov",
