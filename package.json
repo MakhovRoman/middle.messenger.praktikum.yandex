@@ -102,7 +102,8 @@
   "scripts": {
     "dev": "parcel src/pages/index.hbs --no-cache",
     "start": "parcel build src/pages/index.hbs && node ./server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "parcel build src/pages/index.hbs"
   },
   "engines": {
     "node": ">=12.0.0"
