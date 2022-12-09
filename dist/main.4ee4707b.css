@@ -469,7 +469,7 @@
 .chats__search input + svg {
   position: absolute;
   top: 50%;
-  left: 104px;
+  left: 35%;
   transform: translateY(-50%);
 }
 
