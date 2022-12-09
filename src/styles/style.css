@@ -15,7 +15,7 @@
 @import '../partials/chat-list-top/chat-list-top.css';
 @import '../partials/chat-item/chat-item.css';
 @import '../partials/chat-dialog/chat-dialog.css';
-@import '../partials\/chat-popups/chat-popups.css';
+@import '../partials/chat-popups/chat-popups.css';
 @import '../partials/chat-message-group/chat-message-group.css';
 
 * {
