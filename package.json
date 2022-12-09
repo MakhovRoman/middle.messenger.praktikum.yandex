@@ -97,7 +97,7 @@
     "build": "parcel build src/pages/index.hbs"
   },
   "engines": {
-    "node": ">=12.0.0"
+    "node": ">=16.0.0"
   },
   "keywords": [],
   "author": "Roman Makhov",
