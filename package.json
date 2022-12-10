@@ -6,7 +6,8 @@
     "parcel": "^2.8.1",
     "postcss": "^8.4.19",
     "postcss-import": "^15.1.0",
-    "postcss-nested": "^6.0.0"
+    "postcss-nested": "^6.0.0",
+    "precss": "^4.0.0"
   },
   "name": "module_1",
   "version": "1.0.0",
