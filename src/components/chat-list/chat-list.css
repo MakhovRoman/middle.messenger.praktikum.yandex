@@ -1,0 +1,28 @@
+.chat-list {
+    width: 100%;
+    height: 100%;
+    @include flex-vertical;
+    background-color: rgba(251, 251, 251, 1);
+
+}
+
+.custom-scrollbar {
+    overflow-y: scroll;
+    position: relative;
+
+    &::-webkit-scrollbar {
+        width: 2px;
+        position: absolute;
+        right: 0;
+      }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: transparent;
+        transition: all ease-in-out 0.4s;
+    }
+
+    &:hover::-webkit-scrollbar-thumb {
+        background-color: $color-placeholder;
+        transition: all ease-in-out 0.4s;
+    }
+}

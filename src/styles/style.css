@@ -1,0 +1,55 @@
+@import 'normalize.css';
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap');
+@import 'variables.css';
+@import 'mixins.css';
+@import '../components/error-page/page-error.css';
+@import 'autorization.css';
+@import '../components/button/button.css';
+@import '../components/links/back-to.css';
+@import 'registration.css';
+@import '../components/links/back-from-profile/back-from-profile.css';
+@import 'profile.css';
+@import '../components/profile-data/profile-data.css';
+@import '../components/load-photo/load-photo.css';
+@import '../components/chat-list/chat-list.css';
+@import 'main.css';
+@import '../components/chat-list-top/chat-list-top.css';
+@import '../components/chat-item/chat-item.css';
+@import '../components/chat-dialog/chat-dialog.css';
+@import '../components/chat-popups/chat-popups.css';
+@import '../components/chat-message-group/chat-message-group.css';
+
+* {
+    font-family: 'Inter';
+    margin: 0;
+    padding: 0;
+}
+
+a {
+    text-decoration: none;
+    color: $color-link;
+}
+
+input, button {
+    outline: none;
+    border: none;
+    background-color: transparent;
+}
+
+button {
+    cursor: pointer;
+}
+
+input:focus {
+    &::placeholder {
+        color: transparent;
+    }
+}
+
+.container {
+    height: 100vh;
+
+    & .desktop-container {
+        height: 100%;
+    }
+}

@@ -1,0 +1,51 @@
+.profile {
+
+    &__label {
+        @include setFontSize(13px, 500);
+    }
+
+    &__input {
+        outline: none;
+        background-color: transparent;
+        border: none;
+        text-align: right;
+
+        &:focus::placeholder {
+            color: transparent;
+        }
+
+        &[type=password], &[type=password]::placeholder {
+            color: rgba(153, 153, 153, 1);
+        }
+    }
+
+    &__actions {
+        width: 100%;
+        margin-top: 60px;
+
+        & .button-submit {
+            width: fit-content;
+            padding: 12px 70px;
+            margin: 0 auto;
+        }
+    }
+
+    &__item {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+
+        & + & {
+            border-top: 1px solid $color-profile-border;
+        }
+
+        & + .form__item-status {
+            margin-top: 0;
+        }
+    }
+
+    &__exit {
+        color: $color-error;
+    }
+}

@@ -1,0 +1,41 @@
+@mixin flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@mixin pageWrapper {
+    @include flex-center;
+    height: 100%;
+    width: 100%;
+}
+
+@mixin flex-vertical {
+    display: flex;
+    flex-direction: column;
+}
+
+@mixin flex-central-vertical {
+    @include flex-center;
+    flex-direction: column;
+}
+
+@mixin setFontSize($size, $weight) {
+    font-weight: $weight;
+    font-size: $size;
+    line-height: $size;
+}
+
+@mixin popup {
+    width: 340px;
+    height: 257px;
+    background-color: $background-form;
+    z-index: 10;
+    padding: 40px 30px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 12px;
+}
