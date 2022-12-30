@@ -3,23 +3,40 @@
   "version": "1.0.0",
   "description": "praktikum",
   "scripts": {
-    "dev": "parcel src/pages/index.hbs --no-cache --open",
-    "start": "parcel build src/pages/index.hbs && node ./server.js",
+    "dev": "parcel src/index.html --no-cache --open",
+    "start": "parcel build src/index.html && node ./server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "parcel build src/pages/index.hbs"
+    "build": "parcel build src/index.html",
+    "startTS": "parcel src/index.html --no-cache --open"
+  },
+  "alias": {
+    "core": "./src/core",
+    "components": "./src/components",
+    "helpers": "./src/helpers",
+    "pages": "./src/pages",
+    "styles": "./src/styles/",
+    "asserts": "./src/asserts/"
   },
   "author": "Roman Makhov",
   "license": "ISC",
   "devDependencies": {
     "@anikin/parcel-transformer-handlebars": "1.0.9",
-    "parcel": "2.8.1",
+    "@parcel/transformer-inline-string": "2.8.2",
+    "@types/node": "18.11.17",
+    "@typescript-eslint/eslint-plugin": "5.47.1",
+    "@typescript-eslint/parser": "5.47.1",
+    "eslint": "8.30.0",
+    "parcel": "2.8.2",
+    "postcss": "8.4.20",
     "postcss-import": "15.1.0",
-    "precss": "4.0.0"
-  },
-  "engines": {
-    "node": ">=12"
+    "precss": "4.0.0",
+    "stylelint": "14.16.1",
+    "typescript": "4.9.4"
   },
   "dependencies": {
-    "express": "4.18.2"
+    "express": "4.18.2",
+    "handlebars": "4.7.7",
+    "nanoid": "4.0.0",
+    "normalize.css": "8.0.1"
   }
 }
