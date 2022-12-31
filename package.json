@@ -17,9 +17,6 @@
     "styles": "./src/styles/",
     "asserts": "./src/asserts/"
   },
-    "engines": {
-    "node": "18.12.1"
-  },
   "author": "Roman Makhov",
   "license": "ISC",
   "devDependencies": {
