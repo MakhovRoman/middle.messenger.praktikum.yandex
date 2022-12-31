@@ -1,23 +1,10 @@
-@import 'normalize.css';
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap');
+@import 'normalize.css';
 @import 'variables.css';
 @import 'mixins.css';
-@import '../components/error-page/page-error.css';
-@import 'autorization.css';
 @import '../components/button/button.css';
-@import '../components/links/back-to.css';
-@import 'registration.css';
-@import '../components/links/back-from-profile/back-from-profile.css';
-@import 'profile.css';
-@import '../components/profile-data/profile-data.css';
 @import '../components/load-photo/load-photo.css';
-@import '../components/chat-list/chat-list.css';
-@import 'main.css';
-@import '../components/chat-list-top/chat-list-top.css';
-@import '../components/chat-item/chat-item.css';
-@import '../components/chat-dialog/chat-dialog.css';
-@import '../components/chat-popups/chat-popups.css';
-@import '../components/chat-message-group/chat-message-group.css';
+
 
 * {
     font-family: 'Inter';
@@ -51,5 +38,65 @@ input:focus {
 
     & .desktop-container {
         height: 100%;
+    }
+}
+
+#app {
+    height: 100vh;
+    width: 100vw;
+}
+
+.popup {
+    &__container {
+        @include popup;
+
+        & .button-submit {
+            margin: 0;
+        }
+    }
+
+    &__input {
+        width: 100%;
+    }
+}
+
+.back-to__link {
+    @include setFontSize(11px, 500);
+}
+
+
+.form {
+    &__item {
+        width: 100%;
+        position: relative;
+
+        &-input {
+            width: 100%;
+            padding: 7px 0;
+            border: none;
+            border-bottom: 1px solid $color-link;
+            outline: none;
+            @include setFontSize(13px, 500);
+            background-color: transparent;
+
+            &::placeholder {
+                color: $color-placeholder;
+            }
+
+            &:focus::placeholder {
+                color: transparent;
+            }
+
+            &[type=password]:invalid {
+                color: $color-error;
+            }
+        }
+
+        &-status {
+            @include setFontSize(8px, 400);
+            color: $color-error;
+            margin-top: 5px;
+            min-height: calc(8px * 1.5);
+        }
     }
 }

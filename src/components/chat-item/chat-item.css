@@ -6,7 +6,7 @@
         box-sizing: border-box;
         cursor: pointer;
 
-        &:nth-child(4) {
+        &_active {
             background-color: $color-active-chat;
         }
 

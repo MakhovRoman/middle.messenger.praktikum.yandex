@@ -38,6 +38,7 @@
     &__state:checked + &__wrapper {
         opacity: 1;
         visibility: visible;
+        z-index: 1000;
     }
 
     &__wrapper {
@@ -85,50 +86,11 @@
         cursor: pointer;
     }
 
-    &__input {
-        display: none;
-    }
-
     .button-submit {
         margin: 0;
     }
 }
-/*
+
 #load-avatar {
-    width: 130px;
-    height: 130px;
-    border-radius: 50%;
     display: none;
 }
-
-.load-avatar-label {
-    @include flex-center;
-
-    cursor: pointer;
-    width: 130px;
-    height: 130px;
-    border-radius: 50%;
-    background-color: rgba(239, 239, 239, 1);
-    position: relative;
-
-    &:hover::after {
-        @include flex-center;
-        @include setFontSize(16px, 500);
-
-        content: 'Поменять аватар';
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        top: 0;
-        left: 0;
-        border-radius: 50%;
-        text-align: center;
-        background-color: rgba(0, 0, 0, 0.5);
-        color: $background-form;
-    }
-}
-
-#form-for-avatar {
-    display: flex;
-}
-*/
