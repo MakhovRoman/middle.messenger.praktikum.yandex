@@ -7,6 +7,7 @@ interface ButtonProps {
 }
 
 export class Button extends Block {
+    static cName = 'Button';
     constructor({text, onSubmit}: ButtonProps) {
         super({text, events: {click: onSubmit}});
     }

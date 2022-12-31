@@ -1,10 +1,11 @@
-import { Block } from "core";
+import { Block } from 'core';
 
 interface ChatItemProps {
     onCheck?: () => void
 }
 
 export class ChatItem extends Block {
+    static cName = 'ChatItem';
     constructor({onCheck}: ChatItemProps) {
         super({
             events: {
@@ -18,7 +19,10 @@ export class ChatItem extends Block {
             <div class="chat__item" onCheck=onCheck>
                 <div class="chat__item-container">
                     <div class="chat__avatar-wrapper">
-                        <div class="chat__avatar-content"><svg viewBox="0 0 120 120" version="1.1" xmlns="http://www.w3.org/2000/svg"><circle cx="60" cy="60" r="50"/></svg>
+                        <div class="chat__avatar-content">
+                            <svg viewBox="0 0 120 120" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="60" cy="60" r="50"/>
+                            </svg>
                         </div>
                     </div>
                     <div class="chat__info">

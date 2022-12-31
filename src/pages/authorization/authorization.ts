@@ -1,6 +1,7 @@
 import Block from 'core/Block';
 import { messageOutput } from 'helpers/messageOutput';
 export class Authorization extends Block {
+    static cName = 'Authorization';
     constructor() {
         super();
 

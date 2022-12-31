@@ -45,6 +45,7 @@ function showCurrentChat(e: Event) {
 }
 
 export class Chats extends Block {
+    static cName = 'Chats';
     constructor() {
         super();
         this.setProps({

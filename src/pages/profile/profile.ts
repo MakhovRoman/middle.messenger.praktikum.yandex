@@ -5,6 +5,7 @@ let photo = new Image();
 photo.src = require('asserts/photo.png')
 
 export class Profile extends Block {
+    static cName = 'Profile';
     constructor() {
         super();
 
@@ -21,7 +22,7 @@ export class Profile extends Block {
             status: 'disabled',
             status_submit: 'none',
             status_link: '',
-            href: "#",
+            href: '#',
             label_visible: '',
             status_popup: '',
             file_load_name: '',
@@ -102,12 +103,12 @@ export class Profile extends Block {
 
     onSubmit(event: Event) {
         const context = this;
-        messageOutput({e: event, context, page: "profile", type: 'submit'});
+        messageOutput({e: event, context, page: 'profile', type: 'submit'});
     }
 
     onSubmitNewPassword(event: Event) {
         const context = this;
-        messageOutput({e: event, context, page: "password", type: 'submit'});
+        messageOutput({e: event, context, page: 'password', type: 'submit'});
     }
 
     onLoad(e: Event) {
@@ -128,17 +129,17 @@ export class Profile extends Block {
 
     onInput(e: InputEvent) {
         const context = this;
-        messageOutput({e, context, page: "profile"});
+        messageOutput({e, context, page: 'profile'});
     }
 
     onFocus(e: FocusEvent) {
         const context = this;
-        messageOutput({e, context, page: "profile", type: 'focus'})
+        messageOutput({e, context, page: 'profile', type: 'focus'})
     }
 
     onBlur(e: FocusEvent) {
         const context = this;
-        messageOutput({e, context, page: "profile"});
+        messageOutput({e, context, page: 'profile'});
     }
 
     protected render() {
@@ -164,8 +165,12 @@ export class Profile extends Block {
                             <label for="popup" class="popup__bg"></label>
                             <form action="" id="form-for-avatar" class="form-for-avatar form">
                                 <h2 class="form-for-avatar__title">Загрузите файл</h2>
-                                <label for="load-avatar" class="form-for-avatar__label" style="display: {{label_visible}}">Выбрать файл на компьютере</label>
-                                <span id="file_load_name" data-file-direction="{{file_load_direction}}">{{file_load_name}}</span>
+                                <label for="load-avatar" class="form-for-avatar__label" style="display: {{label_visible}}">
+                                    Выбрать файл на компьютере
+                                </label>
+                                <span id="file_load_name" data-file-direction="{{file_load_direction}}">
+                                    {{file_load_name}}
+                                </span>
                                 {{{Input
                                     onPick=onPick
                                     type="file"
@@ -313,10 +318,20 @@ export class Profile extends Block {
                         </div>
                     </div>
                 </form>
-                <form action="" name="profile-change-password" class="form profile__content" style="display: {{status_form_change_password}}">
+                <form
+                    action=""
+                    name="profile-change-password"
+                    class="form profile__content"
+                    style="display: {{status_form_change_password}}"
+                >
                 <div class="profile__item">
                     <label for="profile__oldPassword" class="profile__label">Старый пароль</label>
-                    <input class="profile__input" type="text" name="oldPassword" title="Старый пароль" id="profile__oldPassword" placeholder="*******">
+                    <input
+                        class="profile__input"
+                        type="text" name="oldPassword"
+                        title="Старый пароль" id="profile__oldPassword"
+                        placeholder="*******"
+                    >
                 </div>
                 <div class="profile__item">
                     <label for="profile__login" class="profile__label">Новый пароль</label>

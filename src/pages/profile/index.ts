@@ -17,6 +17,6 @@ registerComponent(Profile);
 registerComponent(loadPhoto);
 registerComponent(Link);
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener('DOMContentLoaded', () => {
     renderDOM(new Profile());
 });

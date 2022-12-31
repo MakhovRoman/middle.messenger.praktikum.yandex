@@ -1,4 +1,4 @@
-import Block from "core/Block";
+import Block from 'core/Block';
 
 interface LinkProps {
     onClick?: () => void,
@@ -8,6 +8,7 @@ interface LinkProps {
 }
 
 export class Link extends Block {
+    static cName = 'Link';
     constructor({onClick, ...props}: LinkProps) {
         super({
             ...props,

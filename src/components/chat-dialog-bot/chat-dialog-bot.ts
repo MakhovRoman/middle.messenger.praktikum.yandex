@@ -1,4 +1,4 @@
-import { Block } from "core";
+import { Block } from 'core';
 
 const images = {
     attach: new Image(),
@@ -17,8 +17,8 @@ interface ChatDialogBotProps {
     onSubmit?: () => void;
 }
 
-
 export class ChatDialogBot extends Block {
+    static cName = 'ChatDialogBot';
     constructor({onClick, onSubmit}: ChatDialogBotProps) {
         super({
             events: {
@@ -30,7 +30,6 @@ export class ChatDialogBot extends Block {
 
 
     protected render() {
-
         return `
             <form name="send-message" action="" class="chat__dialog-bot chat__dialog-row" onSubmit={{onSubmit}}>
                 <div class="chat__dialog-attach" >
@@ -84,7 +83,12 @@ export class ChatDialogBot extends Block {
                     </div>
                 </div>
                 <div class="chat__dialog-write">
-                    <input type="text" id="chat__dialog-write" name="message" class="dialog-write__input" placeholder="Сообщение">
+                    <input type="text"
+                        id="chat__dialog-write"
+                        name="message"
+                        class="dialog-write__input"
+                        placeholder="Сообщение"
+                    >
                     <button  class="dialog-write__button button" type="submit">
                         <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <circle cx="14" cy="14" r="14" fill="#3369F3"/>

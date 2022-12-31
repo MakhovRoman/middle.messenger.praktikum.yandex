@@ -1,6 +1,7 @@
-import { Block } from "core";
+import { Block } from 'core';
 
 export class LoadPhoto extends Block {
+    static cName = 'LoadPhoto';
     protected render():string  {
         return `
         <label for="popup" class="label-for-popup">

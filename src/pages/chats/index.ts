@@ -28,6 +28,6 @@ registerComponent(inputControlled);
 registerComponent(ChatMessageGroup);
 registerComponent(ChatDialogBot);
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener('DOMContentLoaded', () => {
   renderDOM(new Chats());
 });

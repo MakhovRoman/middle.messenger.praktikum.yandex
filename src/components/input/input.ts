@@ -16,6 +16,8 @@ interface InputProps {
 }
 
 export class Input extends Block {
+    static cName = 'Input';
+
     constructor({onInput, onFocus, onBlur, onPick, ...props}: InputProps) {
         super({
             ...props,
@@ -30,6 +32,7 @@ export class Input extends Block {
 
 
     protected render() {
+        console.log(Input.cName);
         return `
         <input
             class="{{class}}"

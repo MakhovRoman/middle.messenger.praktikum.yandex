@@ -1,4 +1,4 @@
-import Block from "core/Block";
+import Block from 'core/Block';
 
 interface InputControlledProps {
     onInput?: () => void;
@@ -13,6 +13,7 @@ interface InputControlledProps {
 }
 
 export class InputControlled extends Block {
+    static cName = 'InputControlled';
     protected render():string {
         return `
         <div class="form__item">

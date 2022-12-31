@@ -2,6 +2,7 @@ import Block from 'core/Block';
 import { messageOutput } from 'helpers/messageOutput';
 
 export class Registration extends Block {
+    static cName = 'Registration';
     constructor() {
         super();
         this.setProps({

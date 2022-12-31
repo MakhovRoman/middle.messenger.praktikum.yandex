@@ -1,4 +1,4 @@
-import { Block } from "core";
+import { Block } from 'core';
 
 interface ChatDialogTopProps {
     onClick: () => void,
@@ -8,6 +8,7 @@ let tools = new Image();
 tools.src = require('asserts/tools.png')
 
 export class ChatDialogTop extends Block {
+    static cName = 'ChatDialogTop';
     constructor({onClick, ...props}: ChatDialogTopProps) {
         super({
             ...props,
