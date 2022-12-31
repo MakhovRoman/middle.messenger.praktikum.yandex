@@ -18,7 +18,7 @@
     "asserts": "./src/asserts/"
   },
     "engines": {
-    "node": "^16.15.0"
+    "node": "18.12.1"
   },
   "author": "Roman Makhov",
   "license": "ISC",
