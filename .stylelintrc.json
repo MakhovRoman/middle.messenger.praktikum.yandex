@@ -1,4 +1,6 @@
 {
-    "block-no-empty": true,
-    "comment-no-empty": true
+    "rules": {
+        "block-no-empty": true,
+        "comment-no-empty": true
+    }
 }
