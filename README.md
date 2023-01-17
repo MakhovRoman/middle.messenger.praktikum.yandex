@@ -2,6 +2,10 @@ https://github.com/MakhovRoman/middle.messenger.praktikum.yandex/pull/1#issue-14
 https://github.com/MakhovRoman/middle.messenger.praktikum.yandex/pull/2#issue-1514624103
 https://deploy--merry-kitten-b1c4f3.netlify.app/
 
+/////////////////////
+/////  Sprint 3  ////
+/////////////////////
+
 Commands:
     "dev": "parcel src/index.html --no-cache --open",
     "start": "parcel build src/index.html && node ./server.js",
