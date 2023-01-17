@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+     "target": "es2017",
+    "module": "commonjs",
+    "rootDir": "./src",
+    "baseUrl": "./src",
+    "typeRoots": ["node_modules/@types", "typings/app.d.ts", "typings/hbs.d.ts"],
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "skipLibCheck": true
+  }
+}
