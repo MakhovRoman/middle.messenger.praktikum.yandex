@@ -1,39 +1,43 @@
-const METHODS = {
-    GET: 'GET',
-    PUT: 'PUT',
-    POST: 'POST',
-    DELETE: 'DELETE'
+const enum METHODS  {
+    GET = 'GET',
+    PUT = 'PUT',
+    POST = 'POST',
+    DELETE = 'DELETE'
 };
 
 interface OptionsType {
-    header?: string
-    data?: string
-    method?: string
+    headers?: Record<string, string>
+    data?: Record<string, string>
+    method: METHODS
     timeout?: number
+    body?: Document | XMLHttpRequestBodyInit | null;
 }
 
-function queryStringify(data: string) {
-    const result = [];
-    for(let [key, value] of Object.entries(data)) {
-        result.push(`${key}=${value.toString()}`);
-    }
-    return '?' + result.join('&');
+type OptionsTypeGET = Omit<OptionsType, 'method' | 'body'>;
+type OptionsTypeNotGET = Omit<OptionsType, 'method' | 'data'>;
+
+
+function queryStringify(data: Record<string, string>) {
+    return '?' + Object
+      .entries(data)
+      .map(([key, value]) => `${key}=${value}`)
+      .join('&')
 }
 
 export class HTTPTransport {
-    get = (url:string, options:OptionsType = {}) => {
+    get = (url:string, options:OptionsTypeGET = {}) => {
         return this.request(url, {...options, method: METHODS.GET}, options.timeout);
     };
 
-    put = (url:string, options:OptionsType = {}) => {
+    put = (url:string, options:OptionsTypeNotGET = {}) => {
         return this.request(url, {...options, method: METHODS.PUT}, options.timeout);
     };
 
-    post = (url:string, options:OptionsType = {}) => {
+    post = (url:string, options:OptionsTypeNotGET = {}) => {
         return this.request(url, {...options, method: METHODS.POST}, options.timeout);
     };
 
-    delete = (url:string, options:OptionsType = {}) => {
+    delete = (url:string, options:OptionsTypeNotGET = {}) => {
         return this.request(url, {...options, method: METHODS.DELETE}, options.timeout);
     };
 
@@ -43,7 +47,7 @@ export class HTTPTransport {
     // headers — obj
     // data — obj
     request = (url:string, options:OptionsType , timeout = 5000) => {
-        const {header, data, method} = options;
+        const {headers, data, body, method} = options;
 
         return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
@@ -64,15 +68,15 @@ export class HTTPTransport {
             xhr.onerror = reject;
             xhr.ontimeout = reject;
 
-            if (method === METHODS.GET || !data) {
+            if (method === METHODS.GET || !body) {
                 xhr.send();
             } else {
-                if (header) {
-                    (Object.keys(header) as string[]).forEach(key => {
-                        xhr.setRequestHeader(key, header[key as any] );
+                if (headers) {
+                    (Object.keys(headers) as string[]).forEach(key => {
+                        xhr.setRequestHeader(key, headers[key as any] );
                     });
                 }
-                xhr.send(data);
+                xhr.send(body);
             }
         })
     };

@@ -32,7 +32,6 @@ export class Input extends Block {
 
 
     protected render() {
-        console.log(Input.cName);
         return `
         <input
             class="{{class}}"
