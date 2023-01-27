@@ -1,9 +1,34 @@
 import Block from 'core/Block';
+import { CoreRouter } from 'core/Router/CoreRouter';
+import { Store } from 'core/Store';
+import { withRouter } from 'helpers/withRouter';
+import { withStore } from 'helpers/withStore';
+import { AppState } from '../../../typings/app';
+import { withUser } from 'helpers/withUser';
+import { createChat } from 'services/chat-services';
 
 type DataType = {
     title: HTMLElement | null,
     avatar: HTMLElement | null
 }
+
+type ChatProps = {
+    router: CoreRouter;
+    store: Store<AppState>;
+    // onClickTop: (e: Event) => void,
+    // onClickBot: (e: Event) => void,
+    // onCheck: (e: Event) => void,
+    // onSubmit: (e: Event) => void,
+    // goToProfile: () => void
+}
+
+// const fromChatToProfile = document.querySelector('#from-chat-to-profile');
+// fromChatToProfile?.addEventListener('click', (event: Event) => {
+//     event.preventDefault();
+//     console.log('gggg');
+
+//     window.router.go('/profile');
+// })
 
 function showCurrentChat(e: Event) {
     const chatArray: HTMLElement[] = Array.from(document.querySelectorAll('.chat__item'));
@@ -46,65 +71,142 @@ function showCurrentChat(e: Event) {
 
 export class Chats extends Block {
     static cName = 'Chats';
-    constructor() {
-        super();
+
+    constructor(props: ChatProps) {
+        super(props);
         this.setProps({
-            onClickTop: this.onClickTop.bind(this),
-            onClickBot: this.onClickBot.bind(this),
-            onCheck: this.onCheck.bind(this),
-            onSubmit: this.onSubmit.bind(this)
+            // onClickTop: this.onClickTop.bind(this),
+            // onClickBot: this.onClickBot.bind(this),
+            // onCheck: this.onCheck.bind(this),
+            // onSubmit: this.onSubmit.bind(this),
+            // goToProfile: this.goToProfile.bind(this)
         })
     }
 
-    onClickTop(e: Event) {
-        let target = document.querySelector('.dialog-tools__button');
-        let target2 = document.querySelector('.dialog-tools__button img');
-
-        if (target == e.target || target2 == e.target) {
-            const modal = document.getElementById('modal-add-user');
-            modal?.classList.toggle('chat__modal-tools_active');
-        }
+    componentDidUpdate() {
+        return window.store.getState().screen === 'chat';
     }
 
-    onClickBot(e: Event) {
-        let target = document.querySelector('.dialog-attach__icon img');
+    // onClickTop(e: Event) {
+    //     let target = document.querySelector('.dialog-tools__button');
+    //     let target2 = document.querySelector('.dialog-tools__button img');
 
-        if (target == e.target) {
-            const modal = document.getElementById('modal-attach');
-            modal?.classList.toggle('chat__modal-attach_active');
+    //     if (target == e.target || target2 == e.target) {
+    //         const modal = document.getElementById('modal-add-user');
+    //         modal?.classList.toggle('chat__modal-tools_active');
+    //     }
+    // }
+
+    // onClickBot(e: Event) {
+    //     let target = document.querySelector('.dialog-attach__icon img');
+
+    //     if (target == e.target) {
+    //         const modal = document.getElementById('modal-attach');
+    //         modal?.classList.toggle('chat__modal-attach_active');
+    //     }
+    // }
+
+    // onSubmit(e: Event) {
+    //     e.preventDefault();
+
+    //     const form = document.querySelector('form[name="send-message"]');
+    //     const inputs = Array.from(form!.querySelectorAll('input'));
+    //     const message = document.getElementById('chat__dialog-write');
+
+    //     const result:any = {};
+
+    //     for (let i = 0; i < inputs!.length; i++) {
+    //         result[inputs![i].name] = inputs![i].value;
+    //     }
+
+    //     if ((message as HTMLInputElement).value) {
+    //         console.log(result);
+    //     }
+
+    // }
+
+    // onCheck(e: Event) {
+    //     showCurrentChat(e);
+    // }
+
+    // goToProfile() {
+    //     console.log('ggg');
+    //     this.props.router.go('/profile');
+    // }
+
+
+
+
+    protected getStateFromProps() {
+        this.state = {
+            goToProfile: () => {
+                this.props.router.go('/profile');
+            },
+
+           onCheck: (e: Event) => {
+                showCurrentChat(e);
+           },
+
+           onSubmit: (e: Event) => {
+                e.preventDefault();
+
+                const form = document.querySelector('form[name="send-message"]');
+                const inputs = Array.from(form!.querySelectorAll('input'));
+                const message = document.getElementById('chat__dialog-write');
+
+                const result:any = {};
+
+                for (let i = 0; i < inputs!.length; i++) {
+                    result[inputs![i].name] = inputs![i].value;
+                }
+
+                if ((message as HTMLInputElement).value) {
+                    console.log(result);
+                }
+
+            },
+
+            onClickBot: (e: Event) => {
+                let target = document.querySelector('.dialog-attach__icon img');
+
+                if (target == e.target) {
+                    const modal = document.getElementById('modal-attach');
+                    modal?.classList.toggle('chat__modal-attach_active');
+                }
+            },
+
+            onClickTop: (e: Event) => {
+                let target = document.querySelector('.dialog-tools__button');
+                let target2 = document.querySelector('.dialog-tools__button img');
+
+                if (target == e.target || target2 == e.target) {
+                    const modal = document.getElementById('modal-add-user');
+                    modal?.classList.toggle('chat__modal-tools_active');
+                }
+            },
+
+            createChat: (e: Event) => {
+                e.preventDefault();
+                const title = (document.querySelector('#chat-name') as HTMLInputElement).value;
+                console.log(title);
+                this.props.store.dispatch(createChat);
+            }
         }
-    }
-
-    onSubmit(e: Event) {
-        e.preventDefault();
-
-        const form = document.querySelector('form[name="send-message"]');
-        const inputs = Array.from(form!.querySelectorAll('input'));
-        const message = document.getElementById('chat__dialog-write');
-
-        const result:any = {};
-
-        for (let i = 0; i < inputs!.length; i++) {
-            result[inputs![i].name] = inputs![i].value;
-        }
-
-        if ((message as HTMLInputElement).value) {
-            console.log(result);
-        }
-
-    }
-
-    onCheck(e: Event) {
-        showCurrentChat(e);
     }
 
     protected render() {
+        console.log('%c render chat ', 'background: green; color: white');
         return `
             <section class="chats">
                 <div class="chats__left-column">
                     <div class="chats__top">
                         <div class="chats__go-to-profile">
-                            <a href="../profile/profile.html" class="chats__link">Профиль ❯</a>
+                        {{{ChatCreate
+
+                        }}}
+                            {{{GoToProfile
+                                goToProfile=goToProfile
+                            }}}
                         </div>
                         <div class="chats__search">
                             <input type="text" id="chat-search" placeholder="Поиск">
@@ -171,7 +273,26 @@ export class Chats extends Block {
                         </div>
                     </div>
                 </div>
+                <div class="popup popup_create">
+                    <input type="checkbox" id="popup-create" class="popup__state">
+                    <div class="popup__wrapper">
+                        <label for="popup-create" class="popup__bg"></label>
+                        <div class="popup__container">
+                            <h3 class="popup__title">Создать чат</h3>
+                            <div class="popup__input">
+                                <input type="text" placeholder="Имя чата" id="chat-name" class="form__item-input">
+                            </div>
+                            {{{Button
+                                text="Создать"
+                                onSubmit=createChat
+                            }}}
+                        </div>
+                    </div>
+                </div>
             </section>
         `
     }
 }
+
+// @ts-expect-error No base constructor has the specified
+export default withRouter(withStore(withUser(Chats)))

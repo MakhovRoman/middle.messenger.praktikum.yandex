@@ -41,11 +41,24 @@
 
     &__go-to-profile {
         margin-bottom: 23px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    &__create {
+        width: 30px;
+        height: 30px;
+        cursor: pointer;
+
+        & svg path {
+            fill: $color-link;
+        }
     }
 
     &__link {
         display: flex;
         justify-content: flex-end;
+        align-items: center;
         @include setFontSize(12px, 500);
         color: $color-placeholder;
     }

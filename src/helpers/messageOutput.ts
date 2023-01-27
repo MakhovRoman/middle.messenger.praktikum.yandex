@@ -1,5 +1,5 @@
-import { ValidateRuleType } from "./validateForm";
-import { validateForm } from "./validateForm";
+import { ValidateRuleType } from './validateForm';
+import { validateForm } from './validateForm';
 
 export enum MessageOutputTypes {
     Input = 'input',
@@ -16,8 +16,8 @@ export enum MessageOutputPages {
 }
 
 export interface MessageOutputProps {
-    e: Event,
-    context: any,
+    event: Event,
+    context?: any,
     type?: string,
     page?: string
 }
@@ -31,20 +31,21 @@ interface AuthorizationDataType {
     phone?: string,
     passwordCheck?: string,
     displayName?: string,
+    oldPassword?: string,
 }
 
 interface ErrorMessageType {
-    errorMessageLogin: string,
-    errorMessagePassword: string,
+    errorMessageLogin?: string,
+    errorMessagePassword?: string,
     errorMessageEmail?: string,
     errorMessageName?: string,
     errorMessageSecondName?: string,
     errorMessagePhone?: string,
-    errorMessagePasswordCheck: string,
-    errorMessageDisplayName: string,
+    errorMessagePasswordCheck?: string,
+    errorMessageDisplayName?: string,
 }
 
-interface ErrorResultType {
+type ErrorResultType = {
     login?: string,
     password?: string,
     email?: string,
@@ -52,11 +53,13 @@ interface ErrorResultType {
     second_name?: string,
     phone?: string,
     passwordCheck?: string,
-    displayName?: string,
+    display_name?: string,
+    oldPassword?: string,
+    newPassword?: string,
 }
 
 export const messageOutput = (props: MessageOutputProps) => {
-    const inputEl = props.e.target as HTMLInputElement;
+    const inputEl = props.event.target as HTMLInputElement;
     const empty = '';
 
     const errorMessage = validateForm([
@@ -143,7 +146,8 @@ export const messageOutput = (props: MessageOutputProps) => {
     }
 
     if (props.type === MessageOutputTypes.Submit) {
-        props.e.preventDefault();
+        console.log(props)
+        props.event.preventDefault();
 
         let authorizationData!: AuthorizationDataType;
         let result!: ErrorResultType;
@@ -174,15 +178,13 @@ export const messageOutput = (props: MessageOutputProps) => {
                 phone: (props.context.refs.phoneInput.refs.inputField.getContent() as HTMLInputElement).value,
                 passwordCheck: (props.context.refs.passwordCheckInput.refs.inputField.getContent() as HTMLInputElement).value,
             }
-
             result = {
                 login: authorizationData.login!,
                 password: authorizationData.password!,
                 email: authorizationData.email,
                 first_name: authorizationData.name,
                 second_name: authorizationData.secondName,
-                phone: authorizationData.phone,
-                passwordCheck: authorizationData.passwordCheck
+                phone: authorizationData.phone
             }
 
             errorMessage = validateForm([
@@ -196,7 +198,7 @@ export const messageOutput = (props: MessageOutputProps) => {
             ])
         } else if (props.page === MessageOutputPages.Profile) {
             authorizationData = {
-                login: (props.context.refs.loginInput.refs.inputField.getContent() as HTMLInputElement).value,
+                login: (props.context.refs.loginInput.refs.inputField.getContent() as HTMLInputElement).value ,
                 email: (props.context.refs.emailInput.refs.inputField.getContent() as HTMLInputElement).value,
                 name: (props.context.refs.nameInput.refs.inputField.getContent() as HTMLInputElement).value,
                 secondName: (props.context.refs.secondNameInput.refs.inputField.getContent() as HTMLInputElement).value,
@@ -205,12 +207,12 @@ export const messageOutput = (props: MessageOutputProps) => {
             }
 
             result = {
-                login: authorizationData.login!,
+                login: authorizationData.login,
                 email: authorizationData.email,
                 first_name: authorizationData.name,
                 second_name: authorizationData.secondName,
                 phone: authorizationData.phone,
-                displayName: authorizationData.displayName,
+                display_name: authorizationData.displayName,
             }
 
             errorMessage = validateForm([
@@ -225,11 +227,13 @@ export const messageOutput = (props: MessageOutputProps) => {
             authorizationData = {
                 password: (props.context.refs.passwordInput.refs.inputField.getContent() as HTMLInputElement).value,
                 passwordCheck: (props.context.refs.passwordCheckInput.refs.inputField.getContent() as HTMLInputElement).value,
+                oldPassword: (props.context.refs.oldPassword.refs.inputField.getContent() as HTMLInputElement).value
             }
 
             result = {
-                password: authorizationData.password!,
-                passwordCheck: authorizationData.passwordCheck
+                newPassword: authorizationData.password!,
+                passwordCheck: authorizationData.passwordCheck,
+                oldPassword: authorizationData.oldPassword
             }
 
             errorMessage = validateForm([
@@ -259,7 +263,9 @@ export const messageOutput = (props: MessageOutputProps) => {
             errorMessage.errorMessagePhone === '' &&
             errorMessage.errorMessagePasswordCheck === '' &&
             errorMessage.errorMessageDisplayName === '') {
-            console.log(result);
+                console.log(result)
         }
+
+        return {result, errorMessage};
     }
 }

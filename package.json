@@ -7,7 +7,8 @@
     "start": "parcel build src/index.html && node ./server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "parcel build src/index.html",
-    "startTS": "parcel src/index.html --no-cache --open"
+    "startTS": "parcel src/index.html --no-cache --open",
+    "startRouting": "parcel src/index.html --no-cache --open"
   },
   "alias": {
     "core": "./src/core",
@@ -15,7 +16,9 @@
     "helpers": "./src/helpers",
     "pages": "./src/pages",
     "styles": "./src/styles/",
-    "asserts": "./src/asserts/"
+    "asserts": "./src/asserts/",
+    "api": "./src/api/",
+    "services": "./src/services/"
   },
   "author": "Roman Makhov",
   "license": "ISC",

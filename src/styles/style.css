@@ -100,3 +100,10 @@ input:focus {
         }
     }
 }
+
+.response-error {
+    font-size: 10px;
+    height: 11px;
+    margin-bottom: 5px;
+    color: $color-error;
+}

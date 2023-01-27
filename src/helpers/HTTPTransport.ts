@@ -1,4 +1,4 @@
-const enum METHODS  {
+export const enum METHODS  {
     GET = 'GET',
     PUT = 'PUT',
     POST = 'POST',
@@ -6,18 +6,22 @@ const enum METHODS  {
 };
 
 interface OptionsType {
-    headers?: Record<string, string>
-    data?: Record<string, string>
-    method: METHODS
-    timeout?: number
+    headers?: {[x:string]: string}
+    data?: Record<string, unknown>
+    method?: METHODS
+    timeout?: 5000,
+    withCredentials?: boolean;
+    responseType?: XMLHttpRequestResponseType;
     body?: Document | XMLHttpRequestBodyInit | null;
 }
 
-type OptionsTypeGET = Omit<OptionsType, 'method' | 'body'>;
-type OptionsTypeNotGET = Omit<OptionsType, 'method' | 'data'>;
+// type OptionsTypeGET = Omit<OptionsType, 'method' | 'body'>;
+// type OptionsTypeNotGET = Omit<OptionsType, 'method' | 'data'>;
+
+type HTTPMethodType = (url: string, options?: OptionsType) => Promise<unknown>
 
 
-function queryStringify(data: Record<string, string>) {
+function queryStringify(data: Record<string, unknown>) {
     return '?' + Object
       .entries(data)
       .map(([key, value]) => `${key}=${value}`)
@@ -25,20 +29,36 @@ function queryStringify(data: Record<string, string>) {
 }
 
 export class HTTPTransport {
-    get = (url:string, options:OptionsTypeGET = {}) => {
-        return this.request(url, {...options, method: METHODS.GET}, options.timeout);
+    get: HTTPMethodType = (url:string, options:OptionsType = {}) => {
+        return this.request(
+                url,
+                {...options, method: METHODS.GET},
+                options.timeout
+            );
     };
 
-    put = (url:string, options:OptionsTypeNotGET = {}) => {
-        return this.request(url, {...options, method: METHODS.PUT}, options.timeout);
+    put: HTTPMethodType = (url:string, options:OptionsType = {}) => {
+        return this.request(
+                url,
+                {...options, method: METHODS.PUT},
+                options.timeout
+            );
     };
 
-    post = (url:string, options:OptionsTypeNotGET = {}) => {
-        return this.request(url, {...options, method: METHODS.POST}, options.timeout);
+    post: HTTPMethodType = (url:string, options:OptionsType = {}) => {
+        return this.request(
+                url,
+                {...options, method: METHODS.POST},
+                options.timeout
+            );
     };
 
-    delete = (url:string, options:OptionsTypeNotGET = {}) => {
-        return this.request(url, {...options, method: METHODS.DELETE}, options.timeout);
+    delete: HTTPMethodType = (url:string, options:OptionsType = {}) => {
+        return this.request(
+                url,
+                {...options, method: METHODS.DELETE},
+                options.timeout
+            );
     };
 
     // PUT, POST, DELETE
@@ -47,20 +67,27 @@ export class HTTPTransport {
     // headers — obj
     // data — obj
     request = (url:string, options:OptionsType , timeout = 5000) => {
-        const {headers, data, body, method} = options;
+        const {headers = {}, data, body, responseType = 'json', method} = options;
 
         return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
 
             if (method === METHODS.GET && data) {
-                xhr.open(method, url + queryStringify(data));
+                xhr.open(method, `${url}${queryStringify(data)}`);
             } else {
                 xhr.open(method!, url);
             }
 
+            (Object.keys(headers)).forEach((key) => {
+                xhr.setRequestHeader(key, headers[key] );
+            });
+
+            xhr.withCredentials = true;
+            xhr.responseType = responseType;
+
             xhr.timeout = timeout;
 
-            xhr.onload = function() {
+            xhr.onload = () => {
                 resolve(xhr);
             };
 
@@ -68,15 +95,10 @@ export class HTTPTransport {
             xhr.onerror = reject;
             xhr.ontimeout = reject;
 
-            if (method === METHODS.GET || !body) {
+            if (method === METHODS.GET || !data) {
                 xhr.send();
             } else {
-                if (headers) {
-                    (Object.keys(headers) as string[]).forEach(key => {
-                        xhr.setRequestHeader(key, headers[key as any] );
-                    });
-                }
-                xhr.send(body);
+                xhr.send(JSON.stringify(data));
             }
         })
     };

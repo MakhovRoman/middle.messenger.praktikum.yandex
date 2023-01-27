@@ -1,13 +1,70 @@
 import Block from 'core/Block';
+import { CoreRouter } from 'core/Router/CoreRouter';
 import { messageOutput } from 'helpers/messageOutput';
+import { AppState, User } from '../../../typings/app';
+import { Store } from 'core/Store';
+import { withStore } from 'helpers/withStore';
+import { withRouter } from 'helpers/withRouter';
+import { withUser } from 'helpers/withUser';
+import { logout } from 'services/auth-services';
+import { changeUserAvatar, changeUserPassword, changeUserProfile } from 'services/user-services';
+import URL from 'api/urls';
 
 let photo = new Image();
-photo.src = require('asserts/photo.png')
+photo.src = require('asserts/photo.png');
+
+type ProfilePageProps = {
+    router: CoreRouter;
+    store: Store<AppState>;
+    status: string,
+    status_submit: string,
+    status_link: string,
+    href: string,
+    label_visible: string,
+    status_popup: string,
+    file_load_name: string,
+    file_load_direction: string,
+    error_file_load: string,
+    status_form_change_password: string,
+    status_form_change_profile: string,
+    errorMessage: {
+        errorMessageLogin: string,
+        errorMessageEmail: string,
+        errorMessageName: string,
+        errorMessageSecondName: string,
+        errorMessagePhone: string,
+    },
+    placeholders: {
+        email: string,
+        login: string,
+        first_name: string,
+        second_name: string,
+        display_name:string,
+        phone: string,
+        password?: string,
+        passwordCheck?: string,
+    },
+    loginValue: string,
+    passwordValue: string,
+    emailValue: string,
+    nameValue: string,
+    secondNameValue: string,
+    phoneValue: string,
+    passwordCheckValue: string,
+    displayNameValue: string,
+    avatarValue: string,
+    class: string,
+    result: {},
+    formError?: () => string | null;
+}
 
 export class Profile extends Block {
     static cName = 'Profile';
-    constructor() {
-        super();
+    user: User;
+
+    constructor(props: ProfilePageProps) {
+        super(props);
+        this.user = window.store.getState().user;
 
         this.setProps({
             onClick: this.onClick.bind(this),
@@ -17,12 +74,14 @@ export class Profile extends Block {
             onFocus: this.onFocus.bind(this),
             onPick: this.onPick.bind(this),
             onLoad: this.onLoad.bind(this),
+            onLogout: this.onLogout.bind(this),
+            checkAvatar: this.checkAvatar.bind(this),
+            onNavigateBack: this.onNavigateBack.bind(this),
             goToChangePassword: this.goToChangePassword.bind(this),
             onSubmitNewPassword: this.onSubmitNewPassword.bind(this),
             status: 'disabled',
             status_submit: 'none',
             status_link: '',
-            href: '#',
             label_visible: '',
             status_popup: '',
             file_load_name: '',
@@ -38,25 +97,43 @@ export class Profile extends Block {
                 errorMessagePhone: '',
             },
             placeholders: {
-                email: 'pochta@yandex.ru',
-                login: 'ivanivanov',
-                first_name: 'Иван',
-                second_name: 'Иванов',
-                display_name:'Иван',
-                phone: '+7 (909) 967 30 30',
+                email: `${this.user.email}`,
+                login: `${this.user.login}`,
+                first_name: `${this.user.firstName}`,
+                second_name: `${this.user.secondName}`,
+                display_name:`${this.user.displayName || ''}`,
+                phone: `${this.user.phone}`,
                 password: 'Новый пароль',
                 passwordCheck: 'Повторите новый пароль',
             },
-            loginValue: '',
+            loginValue: `${this.user.login}`,
             passwordValue: '',
-            emailValue: '',
-            nameValue: '',
-            secondNameValue: '',
-            phoneValue: '',
+            emailValue: `${this.user.email}`,
+            nameValue: `${this.user.firstName}`,
+            secondNameValue: `${this.user.secondName}`,
+            phoneValue: `${this.user.phone}`,
+            displayNameValue: `${this.user.displayName || ''}`,
+            avatarValue:`${this.checkAvatar()}`,
             passwordCheckValue: '',
             class: 'profile__input',
             result: {}
         })
+    }
+
+    onNavigateBack() {
+        this.props.router.go('/chat');
+    }
+
+    componentDidUpdate() {
+        return window.store.getState().screen === 'profile';
+    }
+
+    checkAvatar() {
+        return this.user.avatar ? `${URL.RESOURCES}${this.user.avatar}` : `${photo.src}`;
+    }
+
+    checkUser() {
+        return window.store.getState().user;
     }
 
     onClick(e: Event) {
@@ -67,13 +144,13 @@ export class Profile extends Block {
             status: '',
             status_popup: '',
             placeholders: {
-                email: 'Введите почту',
+                email: 'Введите e-mail',
                 login: 'Введите логин',
                 first_name: 'Введите имя',
                 second_name: 'Введите фамилию',
                 display_name:'Введите имя в чате',
                 phone: 'Введите номер телефона',
-            }
+            },
         })
     }
 
@@ -90,35 +167,96 @@ export class Profile extends Block {
         const value = (e.target as HTMLInputElement).value;
         const result = value.replace(/^.*[\\\/]/, '');
 
-        if (value) {
-            this.setProps({
-                label_visible: 'none',
-                status_popup: 'checked',
-                file_load_name: result,
-                file_load_direction: value,
-                error_file_load: ''
-            })
-        }
+        const span = document.querySelector('#file_load_name');
+        const label = document.querySelector('.form-for-avatar__label');
+
+        span!.textContent = result;
+        (label as HTMLElement)!.style.display = 'none';
+
+        // if (value) {
+        //     this.setProps({
+        //         label_visible: 'none',
+        //         status_popup: 'checked',
+        //         file_load_name: result,
+        //         file_load_direction: value,
+        //         error_file_load: ''
+        //     })
+        // }
     }
 
     onSubmit(event: Event) {
         const context = this;
-        messageOutput({e: event, context, page: 'profile', type: 'submit'});
+        let response = messageOutput({event, context, page: 'profile', type: 'submit'});
+        if (response?.errorMessage.errorMessageLogin == '' &&
+            response.errorMessage.errorMessageEmail == '' &&
+            response.errorMessage.errorMessageName == '' &&
+            response.errorMessage.errorMessageSecondName == '' &&
+            response.errorMessage.errorMessagePhone == ''
+        ) {
+            this.props.store.dispatch(changeUserProfile, response.result);
+            this.setProps({
+                status: 'disabled',
+                status_submit: 'none',
+                status_link: '',
+            })
+
+            setTimeout(() => {this.setProps({
+                loginValue: `${this.checkUser().login}`,
+                emailValue: `${this.checkUser().email}`,
+                nameValue: `${this.checkUser().firstName}`,
+                secondNameValue: `${this.checkUser().secondName}`,
+                phoneValue: `${this.checkUser().phone}`,
+                displayNameValue: `${this.checkUser().displayName || ''}`,
+            })}, 100)
+        }
     }
 
     onSubmitNewPassword(event: Event) {
+        event.preventDefault();
+
         const context = this;
-        messageOutput({e: event, context, page: 'password', type: 'submit'});
+        const response = messageOutput({event, context, page: 'password', type: 'submit'});
+
+
+        if(
+            response?.errorMessage.errorMessagePassword == '' &&
+            response.errorMessage.errorMessagePasswordCheck == ''
+        ) {
+            const result = {
+                oldPassword: response.result.oldPassword,
+                newPassword: response?.result.newPassword
+            };
+
+            this.props.store.dispatch(changeUserPassword, result);
+            this.setProps({
+                status_form_change_password: 'none',
+                status_form_change_profile: '',
+            })
+        }
     }
 
     onLoad(e: Event) {
         e.preventDefault();
 
         const target = document.querySelector('#file_load_name') as HTMLElement;
-        const result = target.dataset.fileDirection;
+        const result = target.textContent;
+        const form:HTMLFormElement = document.querySelector('#form-for-avatar')!;
 
         if (result) {
-            console.log({file_load_direction: result});
+
+            if (!form) {
+                return;
+            }
+
+            const formData = new FormData(form);
+
+            this.props.store.dispatch(changeUserAvatar, formData);
+
+            this.setProps({
+                status_popup: '',
+            });
+
+            setTimeout(() => this.setProps({avatarValue: `${URL.RESOURCES}${this.checkUser().avatar}`}), 500);
         } else {
             this.setProps({
                 status_popup: 'checked',
@@ -127,45 +265,178 @@ export class Profile extends Block {
         }
     }
 
-    onInput(e: InputEvent) {
+    onInput(event: InputEvent) {
         const context = this;
-        messageOutput({e, context, page: 'profile'});
+        messageOutput({event, context, page: 'profile'});
     }
 
-    onFocus(e: FocusEvent) {
+    onFocus(event: FocusEvent) {
         const context = this;
-        messageOutput({e, context, page: 'profile', type: 'focus'})
+        messageOutput({event, context, page: 'profile', type: 'focus'})
     }
 
-    onBlur(e: FocusEvent) {
+    onBlur(event: FocusEvent) {
         const context = this;
-        messageOutput({e, context, page: 'profile'});
+        messageOutput({event, context, page: 'profile'});
     }
+
+    onLogout(event: Event) {
+        console.log('logout')
+        event.preventDefault();
+        this.props.store.dispatch(logout);
+    }
+
+    // protected getStateFromProps() {
+    //     const USER = window.store.getState().user;
+
+    //     this.state = {
+    //         status: 'disabled',
+    //         status_submit: 'none',
+    //         status_link: '',
+    //         href: '#',
+    //         label_visible: '',
+    //         status_popup: '',
+    //         file_load_name: '',
+    //         file_load_direction: '',
+    //         error_file_load: '',
+    //         status_form_change_password: 'none',
+    //         status_form_change_profile: '',
+    //         errorMessage: {
+    //             errorMessageLogin: '',
+    //             errorMessageEmail: '',
+    //             errorMessageName: '',
+    //             errorMessageSecondName: '',
+    //             errorMessagePhone: '',
+    //         },
+    //         placeholders: {
+    //             email: `${USER.email}`,
+    //             login: `${USER.login}`,
+    //             first_name: `${USER.firstName}`,
+    //             second_name: `${USER.secondName}`,
+    //             display_name: `${USER.displayName || ''}`,
+    //             phone: `${USER.phone}`,
+    //             password: 'Новый пароль',
+    //             passwordCheck: 'Повторите новый пароль',
+    //         },
+    //         loginValue: '',
+    //         passwordValue: '',
+    //         emailValue: '',
+    //         nameValue: '',
+    //         secondNameValue: '',
+    //         phoneValue: '',
+    //         passwordCheckValue: '',
+    //         class: 'profile__input',
+    //         result: {},
+    //         onClick: (event: Event) => {
+    //             event.preventDefault();
+    //             this.setProps({
+    //                 status_link: 'none',
+    //                 status_submit: 'flex',
+    //                 status: '',
+    //                 status_popup: '',
+    //                 placeholders: {
+    //                     email: '',
+    //                     login: '',
+    //                     first_name: '',
+    //                     second_name: '',
+    //                     display_name: `${USER.displayName || ''}`,
+    //                     phone: '',
+    //                 },
+    //                 loginValue: `${USER.login}`,
+    //                 emailValue: `${USER.email}`,
+    //                 nameValue: `${USER.firstName}`,
+    //                 secondNameValue: `${USER.secondName}`,
+    //                 phoneValue: `${USER.phone}`,
+    //             })
+    //         },
+    //         goToChangePassword: (event: Event) => {
+    //             event.preventDefault();
+
+    //             this.setProps({
+    //                 status_form_change_password: '',
+    //                 status_form_change_profile: 'none'
+    //             })
+    //         },
+    //         onPick: (event: Event) => {
+    //             const value = (event.target as HTMLInputElement).value;
+    //             const result = value.replace(/^.*[\\\/]/, '');
+
+    //             if (value) {
+    //                 this.setProps({
+    //                     label_visible: 'none',
+    //                     status_popup: 'checked',
+    //                     file_load_name: result,
+    //                     file_load_direction: value,
+    //                     error_file_load: ''
+    //                 })
+    //             }
+    //         },
+    //         onSubmit(event: Event) {
+
+    //             let response = messageOutput({event, context: this, page: 'profile', type: 'submit'});
+    //             if (response?.errorMessage.errorMessageLogin == '' &&
+    //                 response.errorMessage.errorMessageEmail == '' &&
+    //                 response.errorMessage.errorMessageName == '' &&
+    //                 response.errorMessage.errorMessageSecondName == '' &&
+    //                 response.errorMessage.errorMessagePhone == ''
+    //             ) {
+    //                 this.props.store.dispatch(changeUserProfile, response.result);
+    //             }
+    //         },
+    //         onSubmitNewPassword: (event: Event) => {
+    //             messageOutput({event, context: this, page: 'password', type: 'submit'});
+    //         },
+    //         onLoad: (event: Event) => {
+    //             event.preventDefault();
+
+    //             const target = document.querySelector('#file_load_name') as HTMLElement;
+    //             const result = target.dataset.fileDirection;
+
+    //             if (result) {
+    //                 console.log({file_load_direction: result});
+    //             } else {
+    //                 this.setProps({
+    //                     status_popup: 'checked',
+    //                     error_file_load: 'Нужно выбрать файл'
+    //                 })
+    //             }
+    //         },
+    //         onInput: (event: InputEvent) => {
+    //             console.log(this.props)
+    //              messageOutput({event, context: this, page: 'profile'});
+    //         },
+    //         onFocus: (event: FocusEvent) => {
+    //             messageOutput({event, context: this, page: 'profile', type: 'focus'})
+    //         },
+    //         onBlur: (event: FocusEvent) => {
+    //             messageOutput({event, context: this, page: 'profile'});
+    //         },
+    //         onLogout: (event: Event) => {
+    //             event.preventDefault();
+    //             this.props.store.dispatch(logout);
+    //         }
+    //     }
+    // }
 
     protected render() {
+        console.log('%c render profile ', 'background: red; color: black');
         return `
             <section class="profile">
                 <div class="profile__avatar">
-                    <a href="../chats/chats.html" class="link">
-                        <div class="back-from-profile">
-                            <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <circle cx="14" cy="14" r="14" transform="rotate(-180 14 14)" fill="#3369F3"/>
-                                <rect x="20" y="14.8" width="11" height="1.6" transform="rotate(-180 20 14.8)" fill="white"/>
-                                <path d="M13 19L9 14L13 9" stroke="white" stroke-width="1.6"/>
-                            </svg>
-                        </div>
-                    </a>
+                    {{{GoFromProfileToChat
+                        onNavigateBack=onNavigateBack
+                    }}}
                     <label for="popup" class="label-for-popup">
-                        <img src="${photo.src}" alt="pick-photo">
+                        <img src="{{avatarValue}}" alt="pick-photo">
                     </label>
-                    <h1 class="user-name" style="visibility: {{user-name_visibility}}">Иван</h1>
+                    <h1 class="user-name" style="visibility: {{user-name_visibility}}">{{displayNameValue}}</h1>
                     <div class="popup">
                         <input type="checkbox" id="popup" class="popup__state" {{status_popup}}>
                         <div class="popup__wrapper">
                             <label for="popup" class="popup__bg"></label>
                             <form action="" id="form-for-avatar" class="form-for-avatar form">
                                 <h2 class="form-for-avatar__title">Загрузите файл</h2>
-                                <label for="load-avatar" class="form-for-avatar__label" style="display: {{label_visible}}">
+                                <label for="avatar" class="form-for-avatar__label" style="display: {{label_visible}}">
                                     Выбрать файл на компьютере
                                 </label>
                                 <span id="file_load_name" data-file-direction="{{file_load_direction}}">
@@ -174,11 +445,10 @@ export class Profile extends Block {
                                 {{{Input
                                     onPick=onPick
                                     type="file"
-                                    id="load-avatar"
+                                    id="avatar"
                                     accept="image/*"
-                                    name="photo"
+                                    name="avatar"
                                     ref="loadFile"
-                                    value=value
                                 }}}
                                 <div class="form__item">
                                     {{{Button text="Поменять" onSubmit = onLoad}}}
@@ -308,7 +578,7 @@ export class Profile extends Block {
                             }}}
                         </div>
                         <div class="profile__item" style="display: {{status_link}}" >
-                            <a href="./index.hbs" class="back-to__link profile__exit">Выйти</a>
+                            {{{LogoutLink onLogout=onLogout}}}
                         </div>
                         <div class="profile__submit" style="display: {{status_submit}}">
                             {{{Button
@@ -326,12 +596,17 @@ export class Profile extends Block {
                 >
                 <div class="profile__item">
                     <label for="profile__oldPassword" class="profile__label">Старый пароль</label>
-                    <input
-                        class="profile__input"
-                        type="text" name="oldPassword"
-                        title="Старый пароль" id="profile__oldPassword"
-                        placeholder="*******"
-                    >
+                    {{{InputControlled
+                        onInput=onInput
+                        onFocus=onFocus
+                        onBlur=onBlur
+                        type="text"
+                        name="oldPassword"
+                        title="Старый пароль"
+                        placeholder='********'
+                        ref="oldPassword"
+                        class=class
+                    }}}
                 </div>
                 <div class="profile__item">
                     <label for="profile__login" class="profile__label">Новый пароль</label>
@@ -376,3 +651,5 @@ export class Profile extends Block {
         `
     }
 }
+// @ts-expect-error No base constructor has the specified
+export default withRouter(withStore(withUser(Profile)));

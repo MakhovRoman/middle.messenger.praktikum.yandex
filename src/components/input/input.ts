@@ -37,12 +37,12 @@ export class Input extends Block {
             class="{{class}}"
             type="{{type}}"
             placeholder="{{placeholder}}"
-            value="{{value}}"
+            {{#if value}}value="{{value}}"{{/if}}
             name="{{name}}"
             {{status}}
             {{#if id}}id={{id}}{{/if}}
             {{#if accept}}accept={{accept}}{{/if}}
-            onPick = {{onPick}}
+            {{#if onPick}}onPick = {{onPick}}{{/if}}
         >
         `
     }
