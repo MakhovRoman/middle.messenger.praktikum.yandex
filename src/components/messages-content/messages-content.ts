@@ -7,9 +7,11 @@ type MessagesContentProps = {
   }
 
   export class MessagesContent extends Block {
+    static cName = 'MessagesContent';
     // eslint-disable-next-line no-useless-constructor
     constructor(props:MessagesContentProps) {
       super(props);
+
 
     }
 

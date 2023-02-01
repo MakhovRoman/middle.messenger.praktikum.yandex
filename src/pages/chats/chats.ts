@@ -5,7 +5,7 @@ import { withRouter } from 'helpers/withRouter';
 import { withStore } from 'helpers/withStore';
 import { AppState } from '../../../typings/app';
 import { withUser } from 'helpers/withUser';
-import { addUsers, createChat, openChat } from 'services/chat-services';
+import { addUsers, createChat, openChat, removeUsers } from 'services/chat-services';
 import { withChats } from 'helpers/withChats';
 import { ChatItem } from 'components';
 import chatItem from 'components/chat-item';
@@ -36,6 +36,8 @@ type ChatProps = {
     searchAutofocus?: boolean;
     messagesContent: Record<string, unknown> [];
     disableMeetingScreen: string;
+    currentChatAvatar?: string;
+    currentChatTitle?: string;
     // onClickTop: (e: Event) => void,
     // onClickBot: (e: Event) => void,
     // onCheck: (e: Event) => void,
@@ -50,11 +52,17 @@ declare global {
 }
 
 window.handleChats = function (id: number) {
-    this.store.dispatch({toolsActive: 'chat__dialog-content_active', currentChat: id});
-    this.store.dispatch({disableMeetingScreen: 'chats__meeting-wrapper_disable'});
-    this.store.dispatch({chatDialogContent: 'chat__dialog-content_active'});
-    setTimeout(() => {
-        const chatList = document.querySelectorAll('.chat__item') as NodeList;
+    this.store.dispatch({
+        toolsActive: 'chat__dialog-content_active',
+        currentChat: id,
+        disableMeetingScreen: 'chats__meeting-wrapper_disable',
+        chatDialogContent: 'chat__dialog-content_active',
+        chatDialogCompanion: 'chat__dialog-companion_active'
+    });
+
+    this.store.dispatch(openChat, id);
+
+    const chatList = document.querySelectorAll('.chat__item') as NodeList;
         const dialogCompanion = document.querySelector('.chat__dialog-companion');
         const chatMeeting = document.querySelector('.chats__meeting-wrapper');
         const dialogCompanionData: DataType = {
@@ -69,7 +77,7 @@ window.handleChats = function (id: number) {
         chatList?.forEach((item) => {
             const currentElData: DataType = {
                 title: (item as HTMLElement).querySelector('.chat__info-title > h3'),
-                avatar: (item as HTMLElement).querySelector('.chat__avatar-content'),
+                avatar: (item as HTMLElement).querySelector('.chat__avatar-content img'),
             };
 
             if ((item as HTMLElement).dataset.id === id.toString()) {
@@ -83,10 +91,14 @@ window.handleChats = function (id: number) {
                 }
 
                 if (dialogCompanionData.title && currentElData.title) {
-                    dialogCompanionData.title.textContent =currentElData.title.textContent;
+                    // dialogCompanionData.title.textContent =currentElData.title.textContent;
+                    window.store.dispatch({currentChatTitle: currentElData.title.textContent})
                 }
+
+
                 if (dialogCompanionData.avatar && currentElData.avatar) {
-                    dialogCompanionData.avatar.innerHTML = currentElData.avatar.innerHTML;
+                    // dialogCompanionData.avatar.innerHTML = currentElData.avatar.innerHTML;
+                    window.store.dispatch({currentChatAvatar: currentElData.avatar.getAttribute('src')})
                 }
             } else {
                 if ((item as HTMLElement).classList.contains('chat__item_active')) {
@@ -95,9 +107,29 @@ window.handleChats = function (id: number) {
             }
         });
 
-    }, 200)
+    setTimeout(() => {
+        //выделение активного чата
+        chatList?.forEach((item) => {
+            if ((item as HTMLElement).dataset.id === id.toString()) {
+                (item as HTMLElement).classList.add('chat__item_active');
+                (chatMeeting as HTMLElement).style.display = 'none';
+                (chatDialog as HTMLElement).classList.add('chat__dialog-content_active');
+                submitButton.dataset.id=`${id}`;
 
-    this.store.dispatch(openChat, id);
+                if (!tools.classList.contains('chat__dialog-tools_active')) {
+                    tools.classList.add('chat__dialog-tools_active');
+                }
+
+            } else {
+                if ((item as HTMLElement).classList.contains('chat__item_active')) {
+                    (item as HTMLElement).classList.remove('chat__item_active');
+                }
+            }
+        });
+
+    }, 300)
+
+
 }
 
 
@@ -159,13 +191,16 @@ export class Chats extends Block {
 
         this.setProps({
             chatList: () => window.store.getState().chats,
-            userList: window.store.getState().userList,
+            userList: () => window.store.getState().userList,
             modalChecked: '',
             searchAutofocus: 'autofocus',
-            toolsActive: window.store.getState().toolsActive,
+            toolsActive: () => window.store.getState().toolsActive,
             disableMeetingScreen: () => window.store.getState().disableMeetingScreen,
             messageContent: () => window.store.getState().messageContent,
-            chatDialogContent: () => window.store.getState().chatDialogContent
+            chatDialogContent: () => window.store.getState().chatDialogContent,
+            currentChatTitle: () => window.store.getState().currentChatTitle,
+            currentChatAvatar: () => window.store.getState().currentChatAvatar,
+            chatDialogCompanion: () => window.store.getState().chatDialogCompanion,
         })
     }
 
@@ -276,7 +311,7 @@ export class Chats extends Block {
                             type: 'message'
                         }));
                         socket.send(JSON.stringify({
-                            message:'0',
+                            content:'0',
                             type: 'get old'
                         }));
                     }
@@ -312,10 +347,19 @@ export class Chats extends Block {
                 e.preventDefault();
                 const login = (document.querySelector('#add-user') as HTMLInputElement).value;
 
-                const modalSearch = document.querySelector('#popup-add') as HTMLInputElement;
+                // const modalSearch = document.querySelector('#popup-add') as HTMLInputElement;
                 const submitButton = document.querySelector('.popup_add button[type="submit"]') as HTMLElement;
-                const chatId = submitButton.dataset.id;
+                // const chatId = submitButton.dataset.id;
+                const chatId = this.props.store.getState().currentChat;
                 this.props.store.dispatch(addUsers, {login: login, chatId: chatId});
+
+                const checkbox = document.querySelector('#popup-add') as HTMLInputElement;
+                const modalTools = document.querySelector('#modal-add-user') as HTMLInputElement;
+
+                checkbox.checked = false;
+                if (modalTools.classList.contains('chat__modal-tools_active')) {
+                    modalTools.classList.remove('chat__modal-tools_active');
+                }
                 // setTimeout(() => {
                 //     this.setProps({
                 //         userList: window.store.getState().userList,
@@ -325,6 +369,24 @@ export class Chats extends Block {
                 //     console.log('after 200ms');
 
                 // }, 200);
+            },
+
+            removeUser: (e: Event) => {
+                e.preventDefault();
+
+                const login = (document.querySelector('#remove-user') as HTMLInputElement).value;
+
+                const submitButton = (document.querySelector('.popup_remove button[type="submit"]') as HTMLElement);
+                const chatId = this.props.store.getState().currentChat;
+                this.props.store.dispatch(removeUsers, {login: login, chatId: chatId});
+
+                const checkbox = document.querySelector('#popup-remove') as HTMLInputElement;
+                const modalTools = document.querySelector('#modal-add-user') as HTMLInputElement;
+
+                checkbox.checked = false;
+                if (modalTools.classList.contains('chat__modal-tools_active')) {
+                    modalTools.classList.remove('chat__modal-tools_active');
+                }
             },
 
             clickChat: (e: Event, id: number) => {
@@ -408,12 +470,45 @@ export class Chats extends Block {
                                 onClick=onClickTop
                                 add_user_modal=add_user_modal
                                 toolsActive=toolsActive
+                                currentChatAvatar=currentChatAvatar
+                                currentChatTitle=currentChatTitle
+                                chatDialogCompanion=chatDialogCompanion
                             }}}
                             <div class="chats__meeting-wrapper {{disableMeetingScreen}}">
                                 <p class="chats__meeting">Выберите чат чтобы отправить сообщение</p>
                             </div>
                             <div class="chat__dialog-content custom-scrollbar {{chatDialogContent}}">
-                                {{{MessagesContent}}}
+                                {{#each messageContent}}
+                                    <div class="chat__message-date">
+                                        <span>{{date}}</span>
+                                    </div>
+                                    {{#each messages}}
+                                        {{#if myContent}}
+                                            <div class="chat__message-out chat__message-wrapper">
+                                                <div class="chat__message-content">
+                                                    <span>
+                                                        {{myContent}}
+                                                    </span>
+                                                    <div class="chat__message-time">
+                                                        <span>{{time}}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {{/if}}
+                                        {{#if alienContent}}
+                                            <div class="chat__message-in chat__message-wrapper">
+                                                <div class="chat__message-content">
+                                                    <span>
+                                                        {{alienContent}}
+                                                    </span>
+                                                    <div class="chat__message-time">
+                                                        <span>{{time}}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {{/if}}
+                                    {{/each}}
+                                {{/each}}
                              </div>
                             {{{ChatDialogBot
                                 onClick=onClickBot
@@ -455,7 +550,11 @@ export class Chats extends Block {
                             <div class="popup__input">
                                 <input type="text" placeholder="Логин" id="remove-user" class="form__item-input">
                             </div>
-                            <button type="submit" class="button button-submit">Удалить</button>
+                            {{{Button
+                                onSubmit=removeUser
+                                text="Удалить"
+                                class="button button-submit"
+                            }}}
                         </div>
                     </div>
                 </div>
@@ -482,12 +581,12 @@ export class Chats extends Block {
 
 function fn(state = window.store.getState()) {
     return {
-
         disableMeetingScreen: state.disableMeetingScreen,
         messageContent: state.messageContent,
-        chatDialogContent: state.chatDialogContent
+        chatDialogContent: state.chatDialogContent,
+
     }
 }
 
 // @ts-expect-error No base constructor has the specified
-export default withRouter(withStore(withUser(withChats(Chats)), fn));
+export default withRouter(withStore(Chats), fn);

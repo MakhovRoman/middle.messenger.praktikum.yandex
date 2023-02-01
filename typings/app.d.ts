@@ -29,6 +29,9 @@ export type AppState = {
   messageContent: {data: unknown} | null;
   disableMeetingScreen?: string;
   chatDialogContent?: string;
+  currentChatAvatar?: string;
+  currentChatTitle?: string;
+  chatDialogCompanion?: string;
 };
 
 export type User = {

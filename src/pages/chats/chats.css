@@ -131,6 +131,11 @@
     &-companion {
         @include flex-center;
         height: 100%;
+        display: none;
+
+        &_active {
+            display: flex;
+        }
 
         .chat__avatar-content {
             height: 100%;

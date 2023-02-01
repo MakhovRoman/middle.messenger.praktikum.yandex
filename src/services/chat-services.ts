@@ -77,6 +77,34 @@ export const addUsers = async (
     console.log(`user ${data.login} add to chat ${data.chatId}`);
 }
 
+export const removeUsers = async(
+    dispatch: Dispatch<AppState>,
+    state: AppState,
+    data: {
+        chatId: number,
+        login: string
+    }
+) => {
+    const searchUser = await usersAPI.searchUser(data.login) as XMLHttpRequest;
+
+    dispatch({loginFormError: null});
+
+    if (apiHasError(searchUser)) {
+        dispatch({loginFormError: searchUser.reason});
+        return;
+    }
+
+    const userId = searchUser.response[0].id;
+    console.log(userId);
+
+    const removeUser = await chatAPI.deleteUsersFromChat(data.chatId, userId);
+    if (apiHasError(removeUser)) {
+        dispatch({loginFormError: removeUser.reason});
+        return;
+    }
+    console.log(`user ${data.login} remove from chat ${data.chatId}`);
+}
+
 export const openChat = async (
     dispatch: Dispatch<AppState>,
     state: AppState,
@@ -99,10 +127,13 @@ export const openChat = async (
             socket.send(JSON.stringify({
                 content: '0',
                 type: 'get old',
-            }))
+            }));
+
 
             timer = setInterval(() => {
-                socket.send('ping');
+                socket.send(JSON.stringify({
+                    type: 'ping'
+                }));
             }, 50000)
         });
 
@@ -129,6 +160,7 @@ export const openChat = async (
         });
 
         socket.addEventListener('message', (event) => {
+
             const data = JSON.parse(event.data);
             console.log(data);
             if(data.type && data.type === 'error') {
@@ -136,10 +168,11 @@ export const openChat = async (
             }
 
             if(data.length) {
-                const chatId = data[0].chat_id;
+                // const chatId = data[0].chat_id;
+                const chatId = window.store.getState().currentChat;
                 const chats = window.store.getState().chats;
 
-                if (chats && chats.length) {
+                if (chats) {
                     for(const key in chats) {
                         if(chats[key].id === chatId) {
                             const userId = window.store.getState().user.id;
@@ -147,6 +180,7 @@ export const openChat = async (
                             const chatElement = document.querySelector(`[data-id="${chatId}"]`) as HTMLElement;
 
                             const chatElementTextArea = chatElement.querySelector('.chat__info-message > p') as HTMLElement;
+                            console.log(chatElementTextArea)
                             chatElementTextArea.textContent = data[0].content;
 
                             const textArea = document.querySelector('#chat__dialog-write') as HTMLInputElement;
@@ -199,6 +233,9 @@ export const openChat = async (
 
                             window.store.dispatch({messageContent: null});
                             window.store.dispatch({messageContent: result});
+
+                            const chatDialogContent = document.querySelector('.chat__dialog-content') as HTMLElement;
+                            chatDialogContent.scrollTop = chatDialogContent.scrollHeight;
                         }
                     }
                 } else {
