@@ -6,6 +6,10 @@ declare global {
   export type Keys<T extends Record<string, unknown>> = keyof T;
   export type Values<T extends Record<string, unknown>> = T[Keys<T>];
 
+  export type PlainObject<T = unknown> = {
+    [key in string]?: T;
+  };
+
   interface Window {
     store: Store<AppState>;
     router: CoreRouter;
@@ -17,7 +21,14 @@ export type AppState = {
   isLoading: boolean;
   loginFormError: string | null;
   user: User | null | Record<string, unknown>;
-  chats?: {} | null;
+  chats: {} | [] |null;
+  userList?: Record<string, unknown>[];
+  socket: Nullable<WebSocket>;
+  toolsActive?: Nullable<string>;
+  currentChat: Nullable<number>;
+  messageContent: {data: unknown} | null;
+  disableMeetingScreen?: string;
+  chatDialogContent?: string;
 };
 
 export type User = {

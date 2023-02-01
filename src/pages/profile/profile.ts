@@ -207,7 +207,7 @@ export class Profile extends Block {
                 secondNameValue: `${this.checkUser().secondName}`,
                 phoneValue: `${this.checkUser().phone}`,
                 displayNameValue: `${this.checkUser().displayName || ''}`,
-            })}, 100)
+            })}, 300)
         }
     }
 

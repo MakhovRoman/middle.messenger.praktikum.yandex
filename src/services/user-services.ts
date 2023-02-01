@@ -5,6 +5,7 @@ import usersAPI from 'api/usersAPI';
 import authAPI from 'api/authAPI';
 import { logout } from './auth-services';
 import { transformUser } from 'helpers/apiTransformers';
+import chatAPI from 'api/chatsAPI';
 
 export const changeUserProfile = async (
     dispatch: Dispatch<AppState>,
@@ -89,4 +90,13 @@ export const changeUserPassword = async (
         //@ts-expect-error
         dispatch({user: transformUser(responseUser.response as UserDTO)});
         window.router.go();
+}
+
+export const searchUsers = async (
+    dispatch: Dispatch<AppState>,
+    state: AppState,
+    login: string,
+) => {
+    const response = await usersAPI.searchUser(login) as XMLHttpRequest;
+    dispatch({userList: response.response});
 }

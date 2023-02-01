@@ -4,6 +4,7 @@ import authAPI from 'api/authAPI';
 import apiHasError from 'helpers/apiHasError';
 import { transformUser } from 'helpers/apiTransformers';
 import { UserDTO } from 'api/types';
+import chatAPI from 'api/chatsAPI';
 
 type LoginLoad = {
     login: string;
@@ -26,7 +27,7 @@ export const login = async (
 
     const responseUser = await authAPI.getUserInfo();
 
-    dispatch({isLoading: false, loginFormError: null});
+
 
     if (apiHasError(response)) {
         dispatch(logout);
@@ -35,6 +36,14 @@ export const login = async (
 
     //@ts-expect-error
     dispatch({user: transformUser(responseUser.response as UserDTO)});
+
+    const responseChat = await chatAPI.getChats();
+
+    if(apiHasError(responseChat)) {
+        dispatch({isLoading: false, loginFormError: responseChat.response});
+    }
+    //@ts-expect-error
+    dispatch({isLoading: false, loginFormError: null, chats: responseChat.response});
     window.router.go('/chat');
 };
 

@@ -1,0 +1,25 @@
+<div class="messages__content">
+  {{#each window.store.getState().messageContent}}
+  <div class="messages__group">
+    <time class="messages__group-date" datetime={{this.rowDate}}>{{this.date}}</time>
+    {{#each this.messages}}
+    {{#if this.ownContent}}
+    <div class="messages__group-user-container">
+      <p class="messages__group-user">
+        {{this.ownContent}}
+      </p>
+      <time class="messages__group-member-date" datetime={{this.rowDate}}>{{this.time}}</time>
+    </div>
+    {{/if}}
+    {{#if this.memberContent}}
+    <div class="messages__group-member-container">
+      <p class="messages__group-member">
+        {{this.memberContent}}
+      </p>
+      <time class="messages__group-member-date" datetime={{this.rowDate}}>{{this.time}}</time>
+    </div>
+    {{/if}}
+    {{/each}}
+  </div>
+  {{/each}}
+</div>

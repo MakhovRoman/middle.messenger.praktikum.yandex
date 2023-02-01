@@ -32,9 +32,9 @@ class UsersAPI extends BaseAPI {
     }
 
     searchUser(login: string) {
-        return new HTTPTransport().post(`${URL.USER_INFO}/search`, {
+        return new HTTPTransport().post(`${URL.SEARCH_USER}`, {
             headers: {
-                'content-type': 'applicationj/json'
+                'content-type': 'application/json'
             },
             data: {
                 login

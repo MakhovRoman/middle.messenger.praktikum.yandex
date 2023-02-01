@@ -27,7 +27,7 @@ export class ChatDialogTop extends Block {
                     </div>
                     <h3 class="chat__dialog-name"></h3>
                 </div>
-                <div class="chat__dialog-tools">
+                <div class="chat__dialog-tools {{toolsActive}}">
                     <button class="dialog-tools__button" onClick={{onClick}}>
                         <img src="${tools.src}" alt="tools">
                     </button>

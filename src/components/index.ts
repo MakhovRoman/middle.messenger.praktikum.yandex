@@ -17,3 +17,5 @@ export { default as LogoutLink } from './links/logout/';
 export { default as GoToProfile} from './links/goToProfile';
 export {default as GoFromProfileToChatProps} from './links/goFromProfileToChat'
 export {default as ChatCreate} from './chat-create';
+export {default as UserList} from './user-list';
+export {default as MessagesContent} from './messages-content'

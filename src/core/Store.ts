@@ -1,18 +1,22 @@
 import { isEqual } from 'helpers/isEqual';
 import { AppState } from '../../typings/app';
 import EventBus from './EventBus';
+import { set } from 'helpers/set';
 
 export type Dispatch<State> = (
     nextStateOrAction: Partial<State> | Action<State>,
     payload?: any,
   ) => void;
 
-  export type Action<State> = (
-    dispatch: Dispatch<State>,
-    state: State,
-    payload: any,
-  ) => void;
+export type Action<State> = (
+  dispatch: Dispatch<State>,
+  state: State,
+  payload: any,
+) => void;
 
+export enum StoreEvents {
+  Updated = 'updated',
+}
 
 export const defaultState: AppState = {
     appIsInited: false,
@@ -20,7 +24,10 @@ export const defaultState: AppState = {
     screen: null,
     loginFormError: null,
     user: null,
-    chats: null
+    chats: null,
+    socket: null,
+    currentChat: null,
+    messageContent: null,
   };
 
   export class Store<State extends Record<string, any>> extends EventBus {
@@ -57,5 +64,12 @@ export const defaultState: AppState = {
       } else {
         this.set({ ...this.state, ...nextStateOrAction });
       }
+    }
+
+    public update(path: string, value: unknown) {
+      set(this.state, path, value);
+
+      // метод EventBus
+      this.emit(StoreEvents.Updated);
     }
   }

@@ -12,6 +12,7 @@ const enum URL {
     CHANGE_PROFILE = `${URL.USERS}/profile`,
     CHANGE_AVATAR = `${URL.CHANGE_PROFILE}/avatar`,
     CHANGE_PASSWORD = `${URL.USERS}/password`,
+    SEARCH_USER = `${URL.BASE}/user/search`
 }
 
 export default URL;

@@ -22,7 +22,7 @@ export default class Block<P = any> {
   public id = nanoid(6);
 
   protected _element: Nullable<HTMLElement> = null;
-  protected readonly props: P;
+  protected props: Readonly<P>;
   protected children: { [id: string]: Block } = {};
 
   eventBus: () => EventBus<Events>;
@@ -37,7 +37,7 @@ export default class Block<P = any> {
 
     this.getStateFromProps(props);
 
-    this.props = this._makePropsProxy(props || ({} as P));
+    this.props = props || ({} as P);
     this.state = this._makePropsProxy(this.state);
 
     this.eventBus = () => eventBus;
@@ -110,12 +110,18 @@ export default class Block<P = any> {
     return true;
   }
 
-  setProps = (nextProps: Partial<P>) => {
-    if (!nextProps) {
+  setProps = (nextPartialProps: Partial<P>) => {
+    if (!nextPartialProps) {
       return;
     }
 
-    Object.assign(this.props as {}, nextProps);
+    const prevProps = this.props;
+    const nextProps = {...prevProps, ...nextPartialProps}
+
+    this.props = nextProps;
+    this.eventBus().emit(Block.EVENTS.FLOW_CDU, prevProps, nextProps)
+
+    // Object.assign(this.props as {}, nextProps);
   };
 
   setState = (nextState: any) => {
@@ -172,14 +178,14 @@ export default class Block<P = any> {
         return typeof value === 'function' ? value.bind(target) : value;
       },
       set(target: Record<string, unknown>, prop: string, value: unknown) {
-        const oldTarget = {...target};
-        target[prop] = value;
+        // const oldTarget = {...target};
+        // target[prop] = value;
 
-        if (JSON.stringify(oldTarget[prop]) !== JSON.stringify(value)) {
-          self.eventBus().emit(Block.EVENTS.FLOW_CDU, oldTarget, target)
-        }
+        // if (JSON.stringify(oldTarget[prop]) !== JSON.stringify(value)) {
+        //   self.eventBus().emit(Block.EVENTS.FLOW_CDU, oldTarget, target)
+        // }
 
-        return true;
+        // return true;
 
         target[prop] = value;
 

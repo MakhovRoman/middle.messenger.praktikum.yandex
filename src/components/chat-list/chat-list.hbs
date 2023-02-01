@@ -1,0 +1,36 @@
+<div class="chat-list custom-scrollbar">
+    {{#each data}}
+    <div class="chat__item" onCheck=onCheck>
+        <div class="chat__item-container">
+            <div class="chat__avatar-wrapper">
+                <div class="chat__avatar-content">
+                    <img src={{this.avatar}} alt="Avatar">
+                </div>
+            </div>
+            <div class="chat__info">
+                <div class="chat__info-top chat__info-row">
+                    <div class="chat__info-title">
+                        <h3>{{this.title}}</h3>
+                    </div>
+                    {{!--
+                    <div class="chat__info-date">
+                        <span>12:00</span>
+                    </div>
+                    --}}
+                </div>
+                <div class="chat__info-bot chat__info-row">
+                    <div class="chat__info-message">
+                        <span>{{this.last_message.user.display_name}}</span>
+                        <span>{{this.last_message.content}}</span>
+                    </div>
+                    {{#if this.unread_count}}
+                    <div class="chat__info-unread">
+                        <span>{{this.unread_count}}</span>
+                    </div>
+                    {{/if}}
+                </div>
+            </div>
+        </div>
+    </div>
+    {{/each}}
+</div>

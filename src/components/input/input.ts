@@ -13,7 +13,8 @@ interface InputProps {
     id?: string;
     accept?: string;
     class?: string;
-}
+    autofocus?: string
+    }
 
 export class Input extends Block {
     static cName = 'Input';
@@ -43,6 +44,8 @@ export class Input extends Block {
             {{#if id}}id={{id}}{{/if}}
             {{#if accept}}accept={{accept}}{{/if}}
             {{#if onPick}}onPick = {{onPick}}{{/if}}
+            {{#if onInput}}onInput = {{onInput}}{{/if}}
+            {{#if autofocus}}autofocus= {{autofocus}}{{/if}}
         >
         `
     }
