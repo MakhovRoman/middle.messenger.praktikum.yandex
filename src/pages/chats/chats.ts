@@ -42,7 +42,7 @@ declare global {
 }
 
 window.handleChats = function (id: number) {
-    this.store.dispatch({
+    window.store.dispatch({
         toolsActive: 'chat__dialog-content_active',
         currentChat: id,
         disableMeetingScreen: 'chats__meeting-wrapper_disable',
@@ -50,7 +50,7 @@ window.handleChats = function (id: number) {
         chatDialogCompanion: 'chat__dialog-companion_active'
     });
 
-    this.store.dispatch(openChat, id);
+    window.store.dispatch(openChat, id);
 
     const chatList = document.querySelectorAll('.chat__item') as NodeList;
         const dialogCompanion = document.querySelector('.chat__dialog-companion');
