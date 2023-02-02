@@ -51,6 +51,12 @@ export class ChatDialogTop extends Block {
                                 <h3 class="chat__modal-text">Удалить пользователя</h3>
                             </label>
                         </div>
+                        <div class="chat__modal-item">
+                            {{{Button
+                                text="Удалить чат"
+                                onSubmit=onDelete
+                            }}}
+                        </div>
                     </div>
                 </div>
             </div>

@@ -3,14 +3,15 @@ import { AppState, User } from '../../typings/app';
 import apiHasError from 'helpers/apiHasError';
 import usersAPI from 'api/usersAPI';
 import authAPI from 'api/authAPI';
-import { logout } from './auth-services';
 import { transformUser } from 'helpers/apiTransformers';
-import chatAPI from 'api/chatsAPI';
 
 export const changeUserProfile = async (
     dispatch: Dispatch<AppState>,
     state: AppState,
-    data: User) => {
+    data: User
+) => {
+
+    try {
         dispatch({isLoading: true});
 
         const response = await usersAPI.changeProfile(data);
@@ -31,37 +32,42 @@ export const changeUserProfile = async (
 
         //@ts-expect-error
         dispatch({user: transformUser(responseUser.response as UserDTO)});
-        console.log(window.store.getState())
         window.router.go();
+    } catch(err) {
+        console.log(err);
     }
+}
 
 export const changeUserAvatar = async (
     dispatch: Dispatch<AppState>,
     state: AppState,
     form: FormData
 ) => {
-    dispatch({isLoading: true});
+    try{
+        dispatch({isLoading: true});
 
-    const response = await usersAPI.changeAvatar(form);
+        const response = await usersAPI.changeAvatar(form);
 
-    if (!response.ok) {
-        console.log(response)
-        dispatch({isLoading: false, loginFormError: response.status.toString()});
-        return;
+        if (!response.ok) {
+            dispatch({isLoading: false, loginFormError: response.status.toString()});
+            return;
+        }
+
+        const responseUser = await authAPI.getUserInfo();
+
+        dispatch({isLoading: false, loginFormError: null});
+
+        if (apiHasError(responseUser)) {
+            dispatch({isLoading: false, loginFormError: responseUser.reason});
+            return;
+        }
+
+        //@ts-expect-error
+        dispatch({user: transformUser(responseUser.response as UserDTO)});
+        window.router.go();
+    } catch(err) {
+        console.log(err);
     }
-
-    const responseUser = await authAPI.getUserInfo();
-
-    dispatch({isLoading: false, loginFormError: null});
-
-    if (apiHasError(responseUser)) {
-        dispatch({isLoading: false, loginFormError: responseUser.reason});
-        return;
-    }
-
-    //@ts-expect-error
-    dispatch({user: transformUser(responseUser.response as UserDTO)});
-    window.router.go();
 }
 
 export const changeUserPassword = async (
@@ -69,27 +75,31 @@ export const changeUserPassword = async (
     state: AppState,
     data: User
 ) => {
-    dispatch({isLoading: true});
+    try {
+        dispatch({isLoading: true});
 
-    const response = await usersAPI.changePassword(data);
-
-    if (apiHasError(response)) {
-        dispatch({isLoading: false, loginFormError: response.reason});
-        return;
-    }
-
-    const responseUser = await authAPI.getUserInfo();
-
-        dispatch({isLoading: false, loginFormError: null});
+        const response = await usersAPI.changePassword(data);
 
         if (apiHasError(response)) {
             dispatch({isLoading: false, loginFormError: response.reason});
             return;
         }
 
-        //@ts-expect-error
-        dispatch({user: transformUser(responseUser.response as UserDTO)});
-        window.router.go();
+        const responseUser = await authAPI.getUserInfo();
+
+            dispatch({isLoading: false, loginFormError: null});
+
+            if (apiHasError(response)) {
+                dispatch({isLoading: false, loginFormError: response.reason});
+                return;
+            }
+
+            //@ts-expect-error
+            dispatch({user: transformUser(responseUser.response as UserDTO)});
+            window.router.go();
+    } catch(err) {
+        console.log(err)
+    }
 }
 
 export const searchUsers = async (
@@ -97,6 +107,10 @@ export const searchUsers = async (
     state: AppState,
     login: string,
 ) => {
-    const response = await usersAPI.searchUser(login) as XMLHttpRequest;
-    dispatch({userList: response.response});
+    try {
+        const response = await usersAPI.searchUser(login) as XMLHttpRequest;
+        dispatch({userList: response.response});
+    } catch(err) {
+        console.log(err);
+    }
 }

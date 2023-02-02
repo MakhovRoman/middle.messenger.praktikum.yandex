@@ -16,68 +16,80 @@ export const login = async (
     state: AppState,
     data: LoginLoad
 ) => {
-    dispatch({isLoading: true});
+    try {
+        dispatch({isLoading: true});
 
-    const response = await authAPI.signIn(data);
+        const response = await authAPI.signIn(data);
 
-    if (apiHasError(response)) {
-        dispatch({isLoading: false, loginFormError: response.response.reason});
-        return;
+        if (apiHasError(response)) {
+            dispatch({isLoading: false, loginFormError: response.response.reason});
+            return;
+        }
+
+        const responseUser = await authAPI.getUserInfo();
+
+
+
+        if (apiHasError(response)) {
+            dispatch(logout);
+            return;
+        }
+
+        //@ts-expect-error
+        dispatch({user: transformUser(responseUser.response as UserDTO)});
+
+        const responseChat = await chatAPI.getChats();
+
+        if(apiHasError(responseChat)) {
+            dispatch({isLoading: false, loginFormError: responseChat.response});
+        }
+        //@ts-expect-error
+        dispatch({isLoading: false, loginFormError: null, chats: responseChat.response});
+        window.router.go('/chat');
+    } catch(err) {
+        console.log(err);
     }
-
-    const responseUser = await authAPI.getUserInfo();
-
-
-
-    if (apiHasError(response)) {
-        dispatch(logout);
-        return;
-    }
-
-    //@ts-expect-error
-    dispatch({user: transformUser(responseUser.response as UserDTO)});
-
-    const responseChat = await chatAPI.getChats();
-
-    if(apiHasError(responseChat)) {
-        dispatch({isLoading: false, loginFormError: responseChat.response});
-    }
-    //@ts-expect-error
-    dispatch({isLoading: false, loginFormError: null, chats: responseChat.response});
-    window.router.go('/chat');
 };
 
 export const logout = async(dispatch: Dispatch<AppState>) => {
-    console.log('logout')
-    dispatch({isLoading: true});
-    await authAPI.logout();
-    dispatch({isLoading: false, user: null});
-    window.router.go('/login');
+    try {
+        console.log('logout')
+        dispatch({isLoading: true});
+        await authAPI.logout();
+        dispatch({isLoading: false, user: null});
+        window.router.go('/login');
+    } catch(err) {
+        console.log(err);    }
+
 }
 
 export const signUp = async(
     dispatch: Dispatch<AppState>,
     state: AppState,
-    data: User) => {
-    console.log(data);
-    dispatch({isLoading: true});
+    data: User
+) => {
+    try{
+        dispatch({isLoading: true});
 
-    const response = await authAPI.signUp(data);
+        const response = await authAPI.signUp(data);
 
-    if (apiHasError(response)) {
-        dispatch({isLoading: false, loginFormError: response.reason});
-        return;
+        if (apiHasError(response)) {
+            dispatch({isLoading: false, loginFormError: response.reason});
+            return;
+        }
+
+        const responseUser = await authAPI.getUserInfo();
+
+        dispatch({isLoading: false, loginFormError: null});
+
+        if (apiHasError(responseUser)) {
+            return;
+        }
+        //@ts-expect-error
+        dispatch({user: transformUser(responseUser.response as UserDTO)});
+
+        window.router.go('/profile');
+    } catch(err) {
+        console.log(err);
     }
-
-    const responseUser = await authAPI.getUserInfo();
-
-    dispatch({isLoading: false, loginFormError: null});
-
-    if (apiHasError(responseUser)) {
-        return;
-    }
-    //@ts-expect-error
-    dispatch({user: transformUser(responseUser.response as UserDTO)});
-
-    window.router.go('/profile');
 }

@@ -6,21 +6,10 @@ import { AppState } from '../../../typings/app';
 import { withRouter } from 'helpers/withRouter';
 import { withStore } from 'helpers/withStore';
 import { login } from 'services/auth-services';
-import { checkActiveUser } from 'helpers/checkActiveUser';
 
 type AuthorizationPageProps = {
     router: CoreRouter;
     store: Store<AppState>;
-    // onSubmit: (event: Event) => void;
-    // onInput: (event: InputEvent) => void;
-    // onFocus: (event: FocusEvent) => void;
-    // onBlur: (event: FocusEvent) => void;
-    // onNavigateNext?: (event: Event) => void;
-    // errorMessage: Record<string | number | symbol, String>;
-    // loginValue: string;
-    // passwordValue: string;
-    // class: string;
-    // result: any;
     formError?: () => string | null;
 };
 
@@ -38,31 +27,6 @@ export class Authorization extends Block<AuthorizationPageProps> {
     componentDidUpdate() {
         return window.store.getState().screen === 'login';
     }
-
-    // onNavigateNext(e: Event) {
-    //     e.preventDefault();
-    //     this.props.router.go('/registration');
-    // }
-
-    // onInput(e: InputEvent) {
-    //     const context = this;
-    //     messageOutput({e, context, page: 'autorization'});
-    // }
-
-    // onFocus(e: FocusEvent) {
-    //     const context = this;
-    //     messageOutput({e, context, page: 'autorization', type: 'focus'})
-    // }
-
-    // onBlur(e: FocusEvent) {
-    //     const context = this;
-    //     messageOutput({e, context, page: 'autorization'});
-    // }
-
-    // onSubmit(event: Event) {
-    //     const context = this;
-    //     messageOutput({e: event, context, page: 'autorization', type: 'submit'});
-    // }
 
     protected getStateFromProps() {
         this.state = {
@@ -94,14 +58,10 @@ export class Authorization extends Block<AuthorizationPageProps> {
             passwordValue: '',
             class: 'form__item-input',
             result: {},
-
-            // router: window.router,
-            // store: window.store
         }
     }
 
     protected render() {
-        console.log('%c render login ', 'background: yellow; color: black')
         return `
             <section class="wrapper-autorization">
                 <div class="content-autorization">

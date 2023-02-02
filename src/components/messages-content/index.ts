@@ -1,1 +1,1 @@
-export {default as default} from './messages-content'
+export {MessagesContent as default} from './messages-content'

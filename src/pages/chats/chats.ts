@@ -4,13 +4,8 @@ import { Store } from 'core/Store';
 import { withRouter } from 'helpers/withRouter';
 import { withStore } from 'helpers/withStore';
 import { AppState } from '../../../typings/app';
-import { withUser } from 'helpers/withUser';
-import { addUsers, createChat, openChat, removeUsers } from 'services/chat-services';
-import { withChats } from 'helpers/withChats';
-import { ChatItem } from 'components';
-import chatItem from 'components/chat-item';
-import { trim } from 'helpers/trim';
-import { threadId } from 'worker_threads';
+import { addUsers, createChat, openChat, removeChat, removeUsers } from 'services/chat-services';
+import { messageOutput } from 'helpers/messageOutput';
 
 type DataType = {
     title: HTMLElement | null,
@@ -38,11 +33,6 @@ type ChatProps = {
     disableMeetingScreen: string;
     currentChatAvatar?: string;
     currentChatTitle?: string;
-    // onClickTop: (e: Event) => void,
-    // onClickBot: (e: Event) => void,
-    // onCheck: (e: Event) => void,
-    // onSubmit: (e: Event) => void,
-    // goToProfile: () => void
 }
 
 declare global {
@@ -71,8 +61,6 @@ window.handleChats = function (id: number) {
         };
         const chatDialog = document.querySelector('.chat__dialog-content');
         const submitButton = document.querySelector('.popup_add button[type="submit"]') as HTMLElement;
-        const tools = document.querySelector('.chat__dialog-tools') as HTMLElement;
-
         //выделение активного чата
         chatList?.forEach((item) => {
             const currentElData: DataType = {
@@ -86,103 +74,17 @@ window.handleChats = function (id: number) {
                 (chatDialog as HTMLElement).classList.add('chat__dialog-content_active');
                 submitButton.dataset.id=`${id}`;
 
-                if (!tools.classList.contains('chat__dialog-tools_active')) {
-                    tools.classList.add('chat__dialog-tools_active');
-                }
-
                 if (dialogCompanionData.title && currentElData.title) {
-                    // dialogCompanionData.title.textContent =currentElData.title.textContent;
                     window.store.dispatch({currentChatTitle: currentElData.title.textContent})
                 }
 
 
                 if (dialogCompanionData.avatar && currentElData.avatar) {
-                    // dialogCompanionData.avatar.innerHTML = currentElData.avatar.innerHTML;
                     window.store.dispatch({currentChatAvatar: currentElData.avatar.getAttribute('src')})
                 }
-            } else {
-                if ((item as HTMLElement).classList.contains('chat__item_active')) {
-                    (item as HTMLElement).classList.remove('chat__item_active');
-                }
             }
         });
-
-    setTimeout(() => {
-        //выделение активного чата
-        chatList?.forEach((item) => {
-            if ((item as HTMLElement).dataset.id === id.toString()) {
-                (item as HTMLElement).classList.add('chat__item_active');
-                (chatMeeting as HTMLElement).style.display = 'none';
-                (chatDialog as HTMLElement).classList.add('chat__dialog-content_active');
-                submitButton.dataset.id=`${id}`;
-
-                if (!tools.classList.contains('chat__dialog-tools_active')) {
-                    tools.classList.add('chat__dialog-tools_active');
-                }
-
-            } else {
-                if ((item as HTMLElement).classList.contains('chat__item_active')) {
-                    (item as HTMLElement).classList.remove('chat__item_active');
-                }
-            }
-        });
-
-    }, 300)
-
-
 }
-
-
-// const fromChatToProfile = document.querySelector('#from-chat-to-profile');
-// fromChatToProfile?.addEventListener('click', (event: Event) => {
-//     event.preventDefault();
-//     console.log('gggg');
-
-//     window.router.go('/profile');
-// })
-
-
-// function showCurrentChat(e: Event) {
-//     e.stopPropagation()
-
-//     const chatArray: HTMLElement[] = Array.from(document.querySelectorAll('.chat__item'));
-//     const chatMeeting = document.querySelector('.chats__meeting-wrapper');
-//     const chatDialog = document.querySelector('.chat__dialog-content');
-//     const dialogCompanion = document.querySelector('.chat__dialog-companion');
-
-//     // в дальнейшем с помощью этого индекса буду выбирать контент чатов из массива
-//     let currentNumber: number;
-//     let currentEl = e.target;
-//     const currentElData: DataType = {
-//         title: (currentEl as HTMLElement).querySelector('.chat__info-title > h3'),
-//         avatar: (currentEl as HTMLElement).querySelector('.chat__avatar-content'),
-//     };
-//     const dialogCompanionData: DataType = {
-//         title: dialogCompanion!.querySelector('.chat__dialog-name'),
-//         avatar: dialogCompanion!.querySelector('.chat__avatar-content'),
-//     };
-
-//     for(let i = 0; i < chatArray.length; i++) {
-//         if (chatArray[i].classList.contains('chat__item_active')) {
-//             chatArray[i].classList.remove('chat__item_active');
-//         }
-//         if (currentEl == chatArray[i]) currentNumber = i;
-//     };
-
-//     // отображение выбранного чата и диалога
-//     (currentEl as HTMLElement).classList.add('chat__item_active');
-//     (chatMeeting as HTMLElement).style.display = 'none';
-//     (chatDialog as HTMLElement).classList.add('chat__dialog-content_active');
-
-//     //вывод аватара и имени собеседника в top
-//     if (dialogCompanionData.title && currentElData.title) {
-//         dialogCompanionData.title.textContent =currentElData.title.textContent;
-//     }
-//     if (dialogCompanionData.avatar && currentElData.avatar) {
-//         dialogCompanionData.avatar.innerHTML = currentElData.avatar.innerHTML;
-//     }
-// }
-
 export class Chats extends Block {
     static cName = 'Chats';
 
@@ -190,10 +92,12 @@ export class Chats extends Block {
         super(props);
 
         this.setProps({
+            errorMessage: {
+                errorMessageLogin: '',
+            },
             chatList: () => window.store.getState().chats,
             userList: () => window.store.getState().userList,
             modalChecked: '',
-            searchAutofocus: 'autofocus',
             toolsActive: () => window.store.getState().toolsActive,
             disableMeetingScreen: () => window.store.getState().disableMeetingScreen,
             messageContent: () => window.store.getState().messageContent,
@@ -209,67 +113,17 @@ export class Chats extends Block {
         return window.store.getState().screen === 'chat';
     }
 
-    // onClickTop(e: Event) {
-    //     let target = document.querySelector('.dialog-tools__button');
-    //     let target2 = document.querySelector('.dialog-tools__button img');
-
-    //     if (target == e.target || target2 == e.target) {
-    //         const modal = document.getElementById('modal-add-user');
-    //         modal?.classList.toggle('chat__modal-tools_active');
-    //     }
-    // }
-
-    // onClickBot(e: Event) {
-    //     let target = document.querySelector('.dialog-attach__icon img');
-
-    //     if (target == e.target) {
-    //         const modal = document.getElementById('modal-attach');
-    //         modal?.classList.toggle('chat__modal-attach_active');
-    //     }
-    // }
-
-    // onSubmit(e: Event) {
-    //     e.preventDefault();
-
-    //     const form = document.querySelector('form[name="send-message"]');
-    //     const inputs = Array.from(form!.querySelectorAll('input'));
-    //     const message = document.getElementById('chat__dialog-write');
-
-    //     const result:any = {};
-
-    //     for (let i = 0; i < inputs!.length; i++) {
-    //         result[inputs![i].name] = inputs![i].value;
-    //     }
-
-    //     if ((message as HTMLInputElement).value) {
-    //         console.log(result);
-    //     }
-
-    // }
-
-    // onCheck(e: Event) {
-    //     console.log('gggg')
-    //     showCurrentChat(e);
-    // }
-
-    // goToProfile() {
-    //     console.log('ggg');
-    //     this.props.router.go('/profile');
-    // }
-
-
-
-
     protected getStateFromProps() {
         this.state = {
+            errorMessage: {
+                errorMessageLogin: '',
+            },
+
+            loginValue: '',
+
             goToProfile: () => {
                 this.props.router.go('/profile');
             },
-
-           onCheck: (e: Event) => {
-                // showCurrentChat(e);
-                console.log('gggg')
-           },
 
            onSubmit: (e: Event) => {
                 e.preventDefault();
@@ -343,54 +197,60 @@ export class Chats extends Block {
                 }, 1000)
             },
 
-            addUser: (e: Event) => {
-                e.preventDefault();
-                const login = (document.querySelector('#add-user') as HTMLInputElement).value;
+            addUser: (event: Event) => {
+                event.preventDefault();
 
-                // const modalSearch = document.querySelector('#popup-add') as HTMLInputElement;
-                const submitButton = document.querySelector('.popup_add button[type="submit"]') as HTMLElement;
-                // const chatId = submitButton.dataset.id;
-                const chatId = this.props.store.getState().currentChat;
-                this.props.store.dispatch(addUsers, {login: login, chatId: chatId});
+                const response = messageOutput({event, context: this, page: 'chat', type: 'submit'});
 
-                const checkbox = document.querySelector('#popup-add') as HTMLInputElement;
-                const modalTools = document.querySelector('#modal-add-user') as HTMLInputElement;
+                if(response?.errorMessage.errorMessageLogin === '') {
+                    const login = response?.result.login;
+                    const chatId = this.props.store.getState().currentChat;
+                    this.props.store.dispatch(addUsers, {login: login, chatId: chatId});
 
-                checkbox.checked = false;
-                if (modalTools.classList.contains('chat__modal-tools_active')) {
-                    modalTools.classList.remove('chat__modal-tools_active');
-                }
-                // setTimeout(() => {
-                //     this.setProps({
-                //         userList: window.store.getState().userList,
-                //         searchValue: login,
-                //         modalChecked: 'checked'
-                //     });
-                //     console.log('after 200ms');
+                    const checkbox = document.querySelector('#popup-add') as HTMLInputElement;
+                    const modalTools = document.querySelector('#modal-add-user') as HTMLInputElement;
 
-                // }, 200);
-            },
-
-            removeUser: (e: Event) => {
-                e.preventDefault();
-
-                const login = (document.querySelector('#remove-user') as HTMLInputElement).value;
-
-                const submitButton = (document.querySelector('.popup_remove button[type="submit"]') as HTMLElement);
-                const chatId = this.props.store.getState().currentChat;
-                this.props.store.dispatch(removeUsers, {login: login, chatId: chatId});
-
-                const checkbox = document.querySelector('#popup-remove') as HTMLInputElement;
-                const modalTools = document.querySelector('#modal-add-user') as HTMLInputElement;
-
-                checkbox.checked = false;
-                if (modalTools.classList.contains('chat__modal-tools_active')) {
-                    modalTools.classList.remove('chat__modal-tools_active');
+                    checkbox.checked = false;
+                    if (modalTools.classList.contains('chat__modal-tools_active')) {
+                        modalTools.classList.remove('chat__modal-tools_active');
+                    }
                 }
             },
 
-            clickChat: (e: Event, id: number) => {
-                console.log('ggg')
+            removeUser: (event: Event) => {
+                event.preventDefault();
+
+                const response = messageOutput({event, context: this, page: 'chat', type: 'submit'});
+                if(response?.errorMessage.errorMessageLogin === '') {
+
+                    const login = response?.result.login;
+
+                    const chatId = this.props.store.getState().currentChat;
+                    this.props.store.dispatch(removeUsers, {login: login, chatId: chatId});
+
+                    const checkbox = document.querySelector('.popup_remove input[name="removeUser"]') as HTMLInputElement;
+                    const modalTools = document.querySelector('#modal-add-user') as HTMLInputElement;
+
+                    checkbox.checked = false;
+                    if (modalTools.classList.contains('chat__modal-tools_active')) {
+                        modalTools.classList.remove('chat__modal-tools_active');
+                    }
+                }
+            },
+
+            onInput: (event: InputEvent) => {
+                messageOutput({event, context: this, page: 'chat'});
+            },
+
+            onFocus: (event: InputEvent) => {
+                messageOutput({event, context: this, page: 'chat', type: 'focus'});
+            },
+
+            onDelete: (event: Event) => {
+                event.preventDefault();
+                const id = this.props.store.getState().currentChat;
+                console.log(id);
+               this.props.store.dispatch(removeChat, id)
             }
         }
     }
@@ -442,7 +302,7 @@ export class Chats extends Block {
                                             <h3>{{title}}</h3>
                                         </div>
                                         <div class="chat__info-date">
-                                            <span>12:00</span>
+
                                         </div>
                                     </div>
                                     <div class="chat__info-bot chat__info-row">
@@ -473,6 +333,7 @@ export class Chats extends Block {
                                 currentChatAvatar=currentChatAvatar
                                 currentChatTitle=currentChatTitle
                                 chatDialogCompanion=chatDialogCompanion
+                                onDelete=onDelete
                             }}}
                             <div class="chats__meeting-wrapper {{disableMeetingScreen}}">
                                 <p class="chats__meeting">Выберите чат чтобы отправить сообщение</p>
@@ -524,13 +385,16 @@ export class Chats extends Block {
                         <div class="popup__container">
                             <h3 class="popup__title">Добавить пользователя</h3>
                             <div class="popup__input">
-                                {{{Input
+                                {{{InputControlled
                                     type="text"
                                     placeholder="Логин"
-                                    id="add-user"
                                     class="form__item-input"
-                                    name="search"
+                                    name="addUser"
                                     value=searchValue
+                                    onInput=onInput
+                                    onFocus=onFocus
+                                    error=errorMessage.errorMessageLogin
+                                    ref="addUser"
                                  }}}
                             </div>
                             {{{Button
@@ -548,12 +412,23 @@ export class Chats extends Block {
                         <div class="popup__container">
                             <h3 class="popup__title">Удалить пользователя</h3>
                             <div class="popup__input">
-                                <input type="text" placeholder="Логин" id="remove-user" class="form__item-input">
+                            {{{InputControlled
+                                type="text"
+                                placeholder="Логин"
+                                class="form__item-input"
+                                name="removeUser"
+                                value=searchValue
+                                onInput=onInput
+                                onFocus=onFocus
+                                error=errorMessage.errorMessageLogin
+                                ref="removeUser"
+                             }}}
                             </div>
                             {{{Button
                                 onSubmit=removeUser
                                 text="Удалить"
                                 class="button button-submit"
+                                name="removeUser"
                             }}}
                         </div>
                     </div>
@@ -584,7 +459,6 @@ function fn(state = window.store.getState()) {
         disableMeetingScreen: state.disableMeetingScreen,
         messageContent: state.messageContent,
         chatDialogContent: state.chatDialogContent,
-
     }
 }
 

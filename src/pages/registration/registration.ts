@@ -10,20 +10,6 @@ import { signUp } from 'services/auth-services';
 type RegistrationsPageProps = {
     router: CoreRouter;
     store: Store<AppState>;
-    // onSubmit: (event: Event) => void;
-    // onInput: (event: InputEvent) => void;
-    // onFocus: (event: FocusEvent) => void;
-    // onBlur: (event: FocusEvent) => void;
-    // errorMessage: Record<string | number | symbol, String>;
-    // loginValue: string;
-    // passwordValue: string;
-    // emailValue: string;
-    // nameValue: string;
-    // secondNameValue: string;
-    // phoneValue: string;
-    // passwordCheckValue: string;
-    // class: string;
-    // result: any;
     formError?: () => string | null;
 }
 
@@ -31,49 +17,7 @@ export class Registration extends Block<RegistrationsPageProps> {
     static cName = 'Registration';
     constructor(props: RegistrationsPageProps) {
         super(props);
-        // this.setProps({
-        //     // onSubmit: this.onSubmit.bind(this),
-        //     // onInput: this.onInput.bind(this),
-        //     // onBlur: this.onBlur.bind(this),
-        //     // onFocus: this.onFocus.bind(this),
-        //     // errorMessage: {
-        //     //     errorMessageLogin: '',
-        //     //     errorMessagePassword: '',
-        //     //     errorMessageEmail: '',
-        //     //     errorMessageName: '',
-        //     //     errorMessageSecondName: '',
-        //     //     errorMessagePhone: '',
-        //     //     errorMessagePasswordCheck: ''
-        //     // },
-        //     // loginValue: '',
-        //     // passwordValue: '',
-        //     // emailValue: '',
-        //     // nameValue: '',
-        //     // secondNameValue: '',
-        //     // phoneValue: '',
-        //     // passwordCheckValue: '',
-        //     // class: 'form__item-input',
-        //     // result: {},
-        //     // router: window.router,
-        //     // store: window.store
-        // })
     }
-
-    // onInput(event: InputEvent) {
-    //     messageOutput({event, context: this, page: 'registration'});
-    // }
-
-    // onBlur(event: FocusEvent) {
-    //     messageOutput({event, context: this, page: 'registration'});
-    // }
-
-    // onFocus(event: FocusEvent) {
-    //     messageOutput({event, context: this, page: 'registration', type: 'focus'})
-    // }
-
-    // onSubmit(event: Event) {
-    //     messageOutput({event, context: this, page: 'registration', type: 'submit'});
-    // }
 
     protected getStateFromProps() {
         this.state = {

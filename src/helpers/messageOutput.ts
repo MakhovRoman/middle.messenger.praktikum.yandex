@@ -1,3 +1,4 @@
+import input from 'components/input';
 import { ValidateRuleType } from './validateForm';
 import { validateForm } from './validateForm';
 
@@ -12,7 +13,8 @@ export enum MessageOutputPages {
     Authorization = 'autorization',
     Registration = 'registration',
     Profile = 'profile',
-    Password = 'password'
+    Password = 'password',
+    Chats = 'chat'
 }
 
 export interface MessageOutputProps {
@@ -72,6 +74,18 @@ export const messageOutput = (props: MessageOutputProps) => {
         {type: ValidateRuleType.PasswordCheck, value: inputEl.value},
         {type: ValidateRuleType.DisplayName, value: inputEl.value},
     ]);
+
+
+    if (inputEl.name === ValidateRuleType.AddUser) {
+        props.context.refs.addUser.refs.errorField.setProps({
+            error: errorMessage.errorMessageLogin
+        });
+    } else if (inputEl.name === ValidateRuleType.RemoveUser) {
+        props.context.refs.removeUser.refs.errorField.setProps({
+            error: errorMessage.errorMessageLogin
+        })
+    }
+
 
     if (inputEl.name === ValidateRuleType.Login) {
         props.context.refs.loginInput.refs.errorField.setProps({
@@ -240,6 +254,33 @@ export const messageOutput = (props: MessageOutputProps) => {
                 {type: ValidateRuleType.Password, value: authorizationData.password!},
                 {type: ValidateRuleType.PasswordCheck, value: authorizationData.passwordCheck!},
             ])
+        } else if(props.page === MessageOutputPages.Chats) {
+            if (inputEl.textContent === 'Добавить') {
+                authorizationData = {
+                    login: (props.context.refs.addUser.refs.inputField.getContent() as HTMLInputElement).value
+                }
+
+                result = {
+                    login: authorizationData.login!,
+                }
+
+                errorMessage = validateForm([
+                    {type: ValidateRuleType.Login, value: authorizationData.login!},
+                ])
+
+            } else if (inputEl.textContent === 'Удалить') {
+                authorizationData = {
+                    login: (props.context.refs.removeUser.refs.inputField.getContent() as HTMLInputElement).value
+                }
+
+                result = {
+                    login: authorizationData.login!,
+                }
+
+                errorMessage = validateForm([
+                    {type: ValidateRuleType.Login, value: authorizationData.login!},
+                ])
+            }
         }
 
         props.context.setProps({
@@ -263,7 +304,6 @@ export const messageOutput = (props: MessageOutputProps) => {
             errorMessage.errorMessagePhone === '' &&
             errorMessage.errorMessagePasswordCheck === '' &&
             errorMessage.errorMessageDisplayName === '') {
-                console.log(result)
         }
 
         return {result, errorMessage};

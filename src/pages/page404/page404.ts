@@ -1,7 +1,5 @@
 import Block from 'core/Block';
 import { withRouter } from 'helpers/withRouter';
-import { withStore } from 'helpers/withStore';
-
 export class Page404 extends Block {
     static cName = 'Page404';
 

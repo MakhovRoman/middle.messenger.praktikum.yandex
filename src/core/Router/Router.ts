@@ -57,7 +57,6 @@ export function initRouter(router: CoreRouter, store: Store<AppState>) {
 
   store.on('changed', (prevState, nextState) => {
     if (!prevState.appIsInited && nextState.appIsInited) {
-      console.log('start router');
       router.start();
     }
 

@@ -106,3 +106,8 @@
         fill: black;
     }
 }
+
+
+#avatar {
+    display: none;
+}

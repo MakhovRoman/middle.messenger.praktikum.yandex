@@ -10,7 +10,6 @@ async function initApp(dispatch: Dispatch<AppState>) {
     await new Promise(r => setTimeout(r, 1000));
 
     try {
-        console.log('initApp');
         const response = await authAPI.getUserInfo();
 
         if (hasError(response)) {
@@ -30,7 +29,7 @@ async function initApp(dispatch: Dispatch<AppState>) {
 
         if(!window.store.getState().user) {
             if(['/profile', '/chat'].includes(window.location.pathname)) {
-                window.router.replace('/')
+                window.router.replace('/');
             }
         } else {
             window.router.go('/chat');

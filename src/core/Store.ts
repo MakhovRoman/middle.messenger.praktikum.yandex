@@ -45,11 +45,9 @@ export const defaultState: AppState = {
     }
 
     public set(nextState: Partial<State>) {
-      console.log('store set')
       const prevState = { ...this.state };
 
       if (isEqual(prevState, nextState)) {
-        console.log('equal states')
         return;
       }
 

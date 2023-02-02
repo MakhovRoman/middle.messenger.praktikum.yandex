@@ -22,7 +22,7 @@ type MessagesContentProps = {
                 <div class="chat__message-date">
                     <span>{{date}}</span>
                 </div>
-                {{#each messages}}
+                {{#each messageContent.messages}}
                     {{#if myContent}}
                         <div class="chat__message-out chat__message-wrapper">
                             <div class="chat__message-content">
