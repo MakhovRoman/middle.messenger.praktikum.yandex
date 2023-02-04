@@ -5,7 +5,7 @@ import { set } from 'helpers/set';
 
 export type Dispatch<State> = (
     nextStateOrAction: Partial<State> | Action<State>,
-    payload?: any,
+    payload?: unknown,
   ) => void;
 
 export type Action<State> = (
@@ -30,7 +30,7 @@ export const defaultState: AppState = {
     messageContent: null,
   };
 
-  export class Store<State extends Record<string, any>> extends EventBus {
+  export class Store<State extends Record<string, unknown>> extends EventBus {
     private state: State = {} as State;
 
     constructor(defaultState: State) {
