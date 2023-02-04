@@ -215,17 +215,17 @@ export const openChat: DispatchStateHandler<OpenChatPayload> = async (
 
             socket.addEventListener('message', (event) => {
 
-                let data = JSON.parse(event.data);
-                console.log(data);
+                const data = JSON.parse(event.data);
+
                 if(data.type && data.type === 'error') {
                     return;
                 }
 
                 if (!Array.isArray(data)) {
-                    data = [data];
+                    return;
                 }
 
-                if(data.length || data.content) {
+                if(data.length) {
                     const chatId = window.store.getState().currentChat;
                     const chats = window.store.getState().chats;
 
@@ -237,7 +237,7 @@ export const openChat: DispatchStateHandler<OpenChatPayload> = async (
                                 const chatElement = document.querySelector(`[data-id="${chatId}"]`) as HTMLElement;
 
                                 const chatElementTextArea = chatElement.querySelector('.chat__info-message > p') as HTMLElement;
-                                chatElementTextArea.textContent = data[0].content;
+                                chatElementTextArea.textContent = data[0]?.content;
 
                                 const textArea = document.querySelector('#chat__dialog-write') as HTMLInputElement;
                                 textArea.value = '';
@@ -300,18 +300,15 @@ export const openChat: DispatchStateHandler<OpenChatPayload> = async (
                         window.store.dispatch({messageContent: null});
                     }
                 } else {
-                    if (data.type !== 'pong') {
-                        console.log(data);
-                        window.store.dispatch({
-                            messageContent: null,
-                            // chatDialogContent: '',
-                            // disableMeetingScreen: '',
-                            // currentChat: null,
-                            // currentChatAvatar: '',
-                            // currentChatTitle: '',
-                            // toolsActive: ''
-                        });
-                    }
+                    window.store.dispatch({
+                        messageContent: null,
+                        // chatDialogContent: '',
+                        // disableMeetingScreen: '',
+                        // currentChat: null,
+                        // currentChatAvatar: '',
+                        // currentChatTitle: '',
+                        // toolsActive: ''
+                    });
                 }
 
                 checkActiveChat();

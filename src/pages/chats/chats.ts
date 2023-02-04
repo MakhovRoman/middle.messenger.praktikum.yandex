@@ -261,8 +261,6 @@ export class Chats extends Block {
     }
 
     protected render() {
-        console.log('%c render chat ', 'background: green; color: white');
-
         return `
             <div class="chats">
                 <asside class="chats__left-column">

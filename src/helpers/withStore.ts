@@ -18,7 +18,6 @@ export function withStore<P extends WithStateProps, MappedProps = any>(WrappedBl
     }
 
     __onChangeStoreCallback = (prevState: AppState, nextState: AppState) => {
-      console.log('change store callback', window.store);
 
       if(typeof mapStateToProps === 'function') {
         const prevPropsFromState = mapStateToProps(prevState);

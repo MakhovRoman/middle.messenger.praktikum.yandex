@@ -10,7 +10,7 @@ export interface BlockClass<P> extends Function {
   cName?: string;
 }
 
-export default class Block<P = unknown> {
+export default class Block<P = any> {
   static EVENTS = {
     INIT: 'init',
     FLOW_CDM: 'flow:component-did-mount',
@@ -74,7 +74,7 @@ export default class Block<P = unknown> {
     this._element = this._createDocumentElement('div');
   }
 
-  protected getStateFromProps(props: unknown): void {
+  protected getStateFromProps(props: any): void {
     this.state = {};
   }
 
@@ -167,7 +167,7 @@ export default class Block<P = unknown> {
     return this.element!;
   }
 
-  _makePropsProxy(props: unknown): unknown {
+  _makePropsProxy(props: any): any {
     // Можно и так передать this
     // Такой способ больше не применяется с приходом ES6+
     const self = this;
