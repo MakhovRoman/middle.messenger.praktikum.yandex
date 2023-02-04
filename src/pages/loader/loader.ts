@@ -9,9 +9,9 @@ export class Loader extends Block<LoaderProps> {
         console.log('loader');
 
         return `
-            <section class="loader">
+            <main class="loader">
                 <div class="lds-dual-ring"></div>
-            </section>
+            </main>
         `
     }
 }

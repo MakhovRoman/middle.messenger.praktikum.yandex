@@ -1,20 +1,23 @@
 import { Dispatch } from 'core/Store';
-import { AppState, User } from '../../typings/app';
+import { AppState, DispatchStateHandler, User } from '../../typings/app';
 import apiHasError from 'helpers/apiHasError';
 import usersAPI from 'api/usersAPI';
 import authAPI from 'api/authAPI';
 import { transformUser } from 'helpers/apiTransformers';
 
-export const changeUserProfile = async (
-    dispatch: Dispatch<AppState>,
-    state: AppState,
+type ChangeUserPayload = {
     data: User
-) => {
+}
 
+export const changeUserProfile: DispatchStateHandler<ChangeUserPayload> = async (
+    dispatch,
+    state,
+    action
+) => {
     try {
         dispatch({isLoading: true});
 
-        const response = await usersAPI.changeProfile(data);
+        const response = await usersAPI.changeProfile(action);
 
         if (apiHasError(response)) {
             dispatch({isLoading: false, loginFormError: response.reason});
@@ -38,15 +41,19 @@ export const changeUserProfile = async (
     }
 }
 
-export const changeUserAvatar = async (
-    dispatch: Dispatch<AppState>,
-    state: AppState,
+type ChangeAvatarPayload = {
     form: FormData
+}
+
+export const changeUserAvatar: DispatchStateHandler<ChangeAvatarPayload> = async (
+    dispatch,
+    state,
+    form
 ) => {
     try{
         dispatch({isLoading: true});
 
-        const response = await usersAPI.changeAvatar(form);
+        const response = await usersAPI.changeAvatar(form as unknown as FormData);
 
         if (!response.ok) {
             dispatch({isLoading: false, loginFormError: response.status.toString()});
@@ -70,10 +77,10 @@ export const changeUserAvatar = async (
     }
 }
 
-export const changeUserPassword = async (
-    dispatch: Dispatch<AppState>,
-    state: AppState,
-    data: User
+export const changeUserPassword: DispatchStateHandler<ChangeUserPayload> = async (
+    dispatch,
+    state,
+    data
 ) => {
     try {
         dispatch({isLoading: true});
@@ -102,13 +109,17 @@ export const changeUserPassword = async (
     }
 }
 
-export const searchUsers = async (
-    dispatch: Dispatch<AppState>,
-    state: AppState,
-    login: string,
+type SearchUserPayload = {
+    login: string
+}
+
+export const searchUsers: DispatchStateHandler<SearchUserPayload> = async (
+    dispatch,
+    state,
+    login,
 ) => {
     try {
-        const response = await usersAPI.searchUser(login) as XMLHttpRequest;
+        const response = await usersAPI.searchUser(login as unknown as string) as XMLHttpRequest;
         dispatch({userList: response.response});
     } catch(err) {
         console.log(err);

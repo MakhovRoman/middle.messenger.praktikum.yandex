@@ -15,6 +15,13 @@ declare global {
     router: CoreRouter;
   }
 }
+
+export type DispatchStateHandler<TAction> = (
+  dispatch: Dispatch<AppState>,
+  state: AppState,
+  action: TAction
+) => Promise<void>;
+
 export type AppState = {
   appIsInited: boolean;
   screen: Screens | null;

@@ -7,6 +7,7 @@ type WithStateProps = { store: Store<AppState> };
 
 type MapStateToProps<MappedProps> = (state: AppState) => MappedProps
 
+// eslint-disable-next-line max-len
 export function withStore<P extends WithStateProps, MappedProps = any>(WrappedBlock: BlockClass<P>, mapStateToProps?: MapStateToProps<MappedProps>) {
   // @ts-expect-error No base constructor has the specified
   return class extends WrappedBlock<P> {

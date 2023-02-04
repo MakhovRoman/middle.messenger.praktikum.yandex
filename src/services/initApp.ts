@@ -10,14 +10,26 @@ async function initApp(dispatch: Dispatch<AppState>) {
     await new Promise(r => setTimeout(r, 1000));
 
     try {
-        const response = await authAPI.getUserInfo();
+        const response = await authAPI.getUserInfo() as XMLHttpRequest;
+
+        if (response.status !== 200) {
+            window.router.replace('/');
+        }
 
         if (hasError(response)) {
             return;
         }
 
+
         //@ts-ignore
         dispatch({user: transformUser(response.response as UserDTO)});
+
+        // if(!window.store.getStat().user) {
+        //     console.log('ggg')
+        //     window.router.go('/');
+        // }
+
+
 
         const responseChat = await chatAPI.getChats();
 
@@ -27,14 +39,16 @@ async function initApp(dispatch: Dispatch<AppState>) {
         //@ts-ignore
         dispatch({isLoading: false, loginFormError: null, chats: responseChat.response});
 
-        if(!window.store.getState().user) {
-            if(['/profile', '/chat'].includes(window.location.pathname)) {
-                window.router.replace('/');
-            }
-        } else {
-            window.router.go('/chat');
-        }
-
+        // if(!window.store.getState().user) {
+        //     console.log('dgdfgdfgfd')
+        //     if(['/settings', '/messenger'].includes(window.location.pathname)) {
+        //         console.log('ERROR')
+        //         window.router.replace('/');
+        //     }
+        // }
+        //  else {
+        //     window.router.go('/messenger');
+        // }
     } catch(err) {
         console.error(err)
     } finally {

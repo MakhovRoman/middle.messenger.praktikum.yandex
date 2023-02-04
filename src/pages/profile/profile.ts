@@ -121,11 +121,11 @@ export class Profile extends Block {
     }
 
     onNavigateBack() {
-        this.props.router.go('/chat');
+        this.props.router.go('/messenger');
     }
 
     componentDidUpdate() {
-        return window.store.getState().screen === 'profile';
+        return window.store.getState().screen === 'settings';
     }
 
     checkAvatar() {
@@ -159,7 +159,8 @@ export class Profile extends Block {
 
         this.setProps({
             status_form_change_password: '',
-            status_form_change_profile: 'none'
+            status_form_change_profile: 'none',
+            status_link: 'none',
         })
     }
 
@@ -175,6 +176,8 @@ export class Profile extends Block {
     }
 
     onSubmit(event: Event) {
+        event.preventDefault();
+        console.log('change profile')
         const context = this;
         let response = messageOutput({event, context, page: 'profile', type: 'submit'});
         if (response?.errorMessage.errorMessageLogin == '' &&
@@ -221,6 +224,7 @@ export class Profile extends Block {
             this.setProps({
                 status_form_change_password: 'none',
                 status_form_change_profile: '',
+                status_link: '',
             })
         }
     }
@@ -278,7 +282,7 @@ export class Profile extends Block {
 
     protected render() {
         return `
-            <section class="profile">
+            <main class="profile">
                 <div class="profile__avatar">
                     {{{GoFromProfileToChat
                         onNavigateBack=onNavigateBack
@@ -419,32 +423,35 @@ export class Profile extends Block {
                             status=status
                         }}}
                     </div>
-                    <div class="profile__actions">
-                        <div class="profile__item" style="display: {{status_link}}" id="change-profile-data">
-                            {{{Link
-                                title="Изменить данные"
-                                class="back-to__link"
-                                onClick=onClick
-                            }}}
-                        </div>
-                        <div class="profile__item" style="display: {{status_link}}">
-                            {{{Link
-                                title="Изменить пароль"
-                                class="back-to__link"
-                                onClick=goToChangePassword
-                            }}}
-                        </div>
-                        <div class="profile__item" style="display: {{status_link}}" >
-                            {{{LogoutLink onLogout=onLogout}}}
-                        </div>
-                        <div class="profile__submit" style="display: {{status_submit}}">
-                            {{{Button
-                                text="Поменять"
-                                onSubmit=onSubmit
-                            }}}
-                        </div>
+
+                    <div class="profile__submit" style="display: {{status_submit}}">
+                        {{{Button
+                            text="Поменять"
+                            onSubmit=onSubmit
+                        }}}
                     </div>
+                </div>
                 </form>
+                <div class="profile__actions">
+                <div class="profile__item" style="display: {{status_link}}" id="change-profile-data">
+                    {{{Link
+                        title="Изменить данные"
+                        class="back-to__link"
+                        onClick=onClick
+                    }}}
+                </div>
+                <div class="profile__item" style="display: {{status_link}}">
+                    {{{Link
+                        title="Изменить пароль"
+                        class="back-to__link"
+                        onClick=goToChangePassword
+                    }}}
+                </div>
+                <div class="profile__item" style="display: {{status_link}}" >
+                    {{{LogoutLink onLogout=onLogout}}}
+                </div>
+            </div>
+            <div class="profile__actions">
                 <form
                     action=""
                     name="profile-change-password"
@@ -504,7 +511,7 @@ export class Profile extends Block {
                     }}}
                 </div>
             </form>
-            </section>
+            </main>
         `
     }
 }

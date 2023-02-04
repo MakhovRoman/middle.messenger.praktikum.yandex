@@ -19,11 +19,15 @@ export class Registration extends Block<RegistrationsPageProps> {
         super(props);
     }
 
+    componentDidUpdate() {
+        return window.store.getState().screen === 'sign-up';
+    }
+
     protected getStateFromProps() {
         this.state = {
             onNavigateNext: (event: Event) => {
                 event.preventDefault();
-                this.props.router.go('/login');
+                this.props.router.go('/');
             },
             onInput: (event: InputEvent) => {
                 messageOutput({event, context: this, page: 'registration'});
@@ -67,7 +71,7 @@ export class Registration extends Block<RegistrationsPageProps> {
 
     protected render() {
         return `
-            <section class="wrapper-autorization wrapper-registration">
+            <main class="wrapper-autorization wrapper-registration">
                 <div class="content-autorization content-registration">
                     <h1 class="content-autorization__title">Регистрация</h1>
                     <form action="" class="content-autorization__form form">
@@ -166,7 +170,7 @@ export class Registration extends Block<RegistrationsPageProps> {
                         {{{GoToAuthorization onNavigateNext = onNavigateNext}}}
                     </form>
                 </div>
-            </section>
+            </main>
         `
     }
 }

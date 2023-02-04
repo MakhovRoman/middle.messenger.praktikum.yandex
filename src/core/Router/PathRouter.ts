@@ -15,6 +15,8 @@ export class PathRouter implements CoreRouter {
 
         this.onRouteChange();
       }
+
+      console.log('start router')
     }
 
     private onRouteChange(pathname: string = window.location.pathname) {
@@ -26,9 +28,21 @@ export class PathRouter implements CoreRouter {
         return false;
       });
 
-      if (!found && this.routes['*']) {
-        this.routes['*']();
+      // if (!found && this.routes['*']) {
+      //   this.routes['*']();
+      // }
+
+      if (!found) {
+        if(!window.store.getState().user) {
+          window.router.replace('/')
+        } else {
+          window.router.replace('/404');
+        }
       }
+
+      if (window.store.getState().user && window.store.getState().screen === '/') {
+        window.router.replace('/messenger');
+    }
     }
 
     use(hash: string, callback: Function) {

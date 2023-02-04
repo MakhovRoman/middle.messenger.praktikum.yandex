@@ -1,5 +1,5 @@
 import { Dispatch } from 'core/Store';
-import { AppState } from '../../typings/app';
+import { AppState, DispatchStateHandler } from '../../typings/app';
 import apiHasError from 'helpers/apiHasError';
 import chatAPI from 'api/chatsAPI';
 import usersAPI from 'api/usersAPI';
@@ -8,15 +8,19 @@ import hasError from 'helpers/apiHasError';
 
 type T = Record<string, unknown>;
 
-export const createChat = async(
-    dispatch: Dispatch<AppState>,
-    state: AppState,
+type ChatCreatePayload = {
     data: string
+}
+
+export const createChat:DispatchStateHandler<ChatCreatePayload> = async(
+    dispatch,
+    state,
+    data
 ) => {
     try{
         dispatch({isLoading: true});
 
-        const createChat = await chatAPI.createChat(data)  as XMLHttpRequest;
+        const createChat = await chatAPI.createChat(data as unknown as string)  as XMLHttpRequest;
 
         if (apiHasError(createChat)) {
             dispatch({isLoading: false, loginFormError: createChat.response.reason});
@@ -35,10 +39,14 @@ export const createChat = async(
     }
 }
 
-export const removeChat = async(
-    dispatch: Dispatch<AppState>,
-    state: AppState,
+type ChatRemovePayload = {
     data: number
+}
+
+export const removeChat: DispatchStateHandler<ChatRemovePayload> = async(
+    dispatch,
+    state,
+    data
 ) => {
     try {
         dispatch({isLoading: true});
@@ -74,13 +82,19 @@ export const removeChat = async(
 
 }
 
-export const addUsers = async (
-    dispatch: Dispatch<AppState>,
-    state: AppState,
+type UserActionsPayload = {
+    chatId: number;
+    login: string;
     data: {
         chatId: number,
         login: string
     }
+}
+
+export const addUsers: DispatchStateHandler<UserActionsPayload> = async (
+    dispatch,
+    state,
+    data
 ) => {
     try{
         const searchUser = await usersAPI.searchUser(data.login) as XMLHttpRequest;
@@ -103,16 +117,12 @@ export const addUsers = async (
     } catch (err) {
         console.log(err);
     }
-
 }
 
-export const removeUsers = async(
-    dispatch: Dispatch<AppState>,
-    state: AppState,
-    data: {
-        chatId: number,
-        login: string
-    }
+export const removeUsers: DispatchStateHandler<UserActionsPayload> = async(
+    dispatch,
+    state,
+    data
 ) => {
     try {
         const searchUser = await usersAPI.searchUser(data.login) as XMLHttpRequest;
@@ -136,16 +146,19 @@ export const removeUsers = async(
     } catch(err) {
         console.log(err);
     }
-
 }
 
-export const openChat = async (
-    dispatch: Dispatch<AppState>,
-    state: AppState,
+type OpenChatPayload = {
     chatId: number
+}
+
+export const openChat: DispatchStateHandler<OpenChatPayload> = async (
+    dispatch,
+    state,
+    chatId
 ) => {
     try {
-        const getToken = await chatAPI.getTokenChat(chatId) as XMLHttpRequest;
+        const getToken = await chatAPI.getTokenChat(chatId as unknown as number) as XMLHttpRequest;
 
         if (getToken.status === 200) {
             const {token} = getToken.response;
@@ -202,14 +215,18 @@ export const openChat = async (
 
             socket.addEventListener('message', (event) => {
 
-                const data = JSON.parse(event.data);
+                let data = JSON.parse(event.data);
                 console.log(data);
                 if(data.type && data.type === 'error') {
                     return;
                 }
 
-                if(data.length) {
-                     const chatId = window.store.getState().currentChat;
+                if (!Array.isArray(data)) {
+                    data = [data];
+                }
+
+                if(data.length || data.content) {
+                    const chatId = window.store.getState().currentChat;
                     const chats = window.store.getState().chats;
 
                     if (chats) {
@@ -283,15 +300,18 @@ export const openChat = async (
                         window.store.dispatch({messageContent: null});
                     }
                 } else {
-                    window.store.dispatch({
-                        messageContent: null,
-                        chatDialogContent: '',
-                        disableMeetingScreen: '',
-                        currentChat: null,
-                        currentChatAvatar: '',
-                        currentChatTitle: '',
-                        toolsActive: ''
-                    });
+                    if (data.type !== 'pong') {
+                        console.log(data);
+                        window.store.dispatch({
+                            messageContent: null,
+                            // chatDialogContent: '',
+                            // disableMeetingScreen: '',
+                            // currentChat: null,
+                            // currentChatAvatar: '',
+                            // currentChatTitle: '',
+                            // toolsActive: ''
+                        });
+                    }
                 }
 
                 checkActiveChat();

@@ -7,11 +7,11 @@ import Profile from 'pages/profile';
 import  Registration  from 'pages/registration';
 
 export const enum Screens {
-    Login = 'login',
-    Profile = 'profile',
-    Registration = 'registration',
-    Page404 = 'page404',
-    Chat = 'chat'
+    Login = '/',
+    Profile = 'settings',
+    Registration = 'sign-up',
+    Page404 = '404',
+    Chat = 'messenger'
 }
 
 const map: Record<Screens, BlockClass<any>> = {

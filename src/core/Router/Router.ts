@@ -7,28 +7,33 @@ import { AppState } from '../../../typings/app';
 
 const routes = [
   {
-    path: '/login',
+    path: '/',
     block: Screens.Login,
     shouldAuthorized: false,
   },
   {
-    path: '/profile',
+    path: '/settings',
     block: Screens.Profile,
     shouldAuthorized: true,
   },
   {
-    path: '/registration',
+    path: '/sign-up',
     block: Screens.Registration,
     shouldAuthorized: false,
   },
   {
-    path: '/chat',
+    path: '/messenger',
     block: Screens.Chat,
     shouldAuthorized: true,
   },
   {
     path: '*',
     block: Screens.Login,
+    shouldAuthorized: false,
+  },
+  {
+    path: '/404',
+    block: Screens.Page404,
     shouldAuthorized: false,
   },
 ];

@@ -28,8 +28,6 @@ export const login = async (
 
         const responseUser = await authAPI.getUserInfo();
 
-
-
         if (apiHasError(response)) {
             dispatch(logout);
             return;
@@ -45,7 +43,8 @@ export const login = async (
         }
         //@ts-expect-error
         dispatch({isLoading: false, loginFormError: null, chats: responseChat.response});
-        window.router.go('/chat');
+        console.log('login')
+        window.router.go('/messenger');
     } catch(err) {
         console.log(err);
     }
@@ -57,7 +56,7 @@ export const logout = async(dispatch: Dispatch<AppState>) => {
         dispatch({isLoading: true});
         await authAPI.logout();
         dispatch({isLoading: false, user: null});
-        window.router.go('/login');
+        window.router.go('/');
     } catch(err) {
         console.log(err);    }
 
@@ -88,7 +87,7 @@ export const signUp = async(
         //@ts-expect-error
         dispatch({user: transformUser(responseUser.response as UserDTO)});
 
-        window.router.go('/profile');
+        window.router.go('/settings');
     } catch(err) {
         console.log(err);
     }

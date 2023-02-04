@@ -25,7 +25,7 @@ export class Authorization extends Block<AuthorizationPageProps> {
     }
 
     componentDidUpdate() {
-        return window.store.getState().screen === 'login';
+        return window.store.getState().screen === '/';
     }
 
     protected getStateFromProps() {
@@ -48,7 +48,7 @@ export class Authorization extends Block<AuthorizationPageProps> {
             },
             onNavigateNext: (event: Event) => {
                 event.preventDefault();
-                this.props.router.go('/registration');
+                this.props.router.go('/sign-up');
             },
             errorMessage: {
                 errorMessageLogin: '',
@@ -63,42 +63,44 @@ export class Authorization extends Block<AuthorizationPageProps> {
 
     protected render() {
         return `
-            <section class="wrapper-autorization">
-                <div class="content-autorization">
-                    <h1 class="content-autorization__title">Вход</h1>
-                    <form action="" class="content-autorization__form form">
-                        {{{InputControlled
-                            onInput=onInput
-                            onFocus=onFocus
-                            onBlur=onBlur
-                            type="text"
-                            name="login"
-                            title="Логин"
-                            placeholder="Логин"
-                            ref="loginInput"
-                            value=loginValue
-                            error=errorMessage.errorMessageLogin
-                            class=class
-                        }}}
-                        {{{InputControlled
-                            onInput=onInput
-                            onFocus=onFocus
-                            onBlur=onBlur
-                            type="password"
-                            name="password"
-                            title="Пароль"
-                            placeholder="Пароль"
-                            ref="passwordInput"
-                            value=passwordValue
-                            error=errorMessage.errorMessagePassword
-                            class=class
-                        }}}
-                        {{{Button text="Авторизоваться" onSubmit=onSubmit}}}
-                        <div class="response-error">{{formError}}</div>
-                        {{{GoToRegistration onNavigateNext=onNavigateNext}}}
-                    </form>
-                </div>
-            </section>
+            <main class="main">
+                <section class="wrapper-autorization">
+                    <div class="content-autorization">
+                        <h1 class="content-autorization__title">Вход</h1>
+                        <form action="" class="content-autorization__form form">
+                            {{{InputControlled
+                                onInput=onInput
+                                onFocus=onFocus
+                                onBlur=onBlur
+                                type="text"
+                                name="login"
+                                title="Логин"
+                                placeholder="Логин"
+                                ref="loginInput"
+                                value=loginValue
+                                error=errorMessage.errorMessageLogin
+                                class=class
+                            }}}
+                            {{{InputControlled
+                                onInput=onInput
+                                onFocus=onFocus
+                                onBlur=onBlur
+                                type="password"
+                                name="password"
+                                title="Пароль"
+                                placeholder="Пароль"
+                                ref="passwordInput"
+                                value=passwordValue
+                                error=errorMessage.errorMessagePassword
+                                class=class
+                            }}}
+                            {{{Button text="Авторизоваться" onSubmit=onSubmit}}}
+                            <div class="response-error">{{formError}}</div>
+                            {{{GoToRegistration onNavigateNext=onNavigateNext}}}
+                        </form>
+                    </div>
+                </section>
+            </main>
         `
     }
 }

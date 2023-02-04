@@ -29,7 +29,7 @@ function queryStringify(data: Record<string, unknown>) {
 }
 
 export class HTTPTransport {
-    get: HTTPMethodType = (url:string, options:OptionsType = {}) => {
+    get: HTTPMethodType = (url, options = {}) => {
         return this.request(
                 url,
                 {...options, method: METHODS.GET},
@@ -37,7 +37,7 @@ export class HTTPTransport {
             );
     };
 
-    put: HTTPMethodType = (url:string, options:OptionsType = {}) => {
+    put: HTTPMethodType = (url, options = {}) => {
         return this.request(
                 url,
                 {...options, method: METHODS.PUT},
@@ -45,7 +45,7 @@ export class HTTPTransport {
             );
     };
 
-    post: HTTPMethodType = (url:string, options:OptionsType = {}) => {
+    post: HTTPMethodType = (url, options = {}) => {
         return this.request(
                 url,
                 {...options, method: METHODS.POST},
@@ -53,7 +53,7 @@ export class HTTPTransport {
             );
     };
 
-    delete: HTTPMethodType = (url:string, options:OptionsType = {}) => {
+    delete: HTTPMethodType = (url, options = {}) => {
         return this.request(
                 url,
                 {...options, method: METHODS.DELETE},
@@ -67,7 +67,7 @@ export class HTTPTransport {
     // headers — obj
     // data — obj
     request = (url:string, options:OptionsType , timeout = 5000) => {
-        const {headers = {}, data, body, responseType = 'json', method} = options;
+        const {headers = {}, data, responseType = 'json', method} = options;
 
         return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();

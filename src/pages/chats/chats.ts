@@ -110,7 +110,7 @@ export class Chats extends Block {
 
 
     componentDidUpdate() {
-        return window.store.getState().screen === 'chat';
+        return window.store.getState().screen === 'messenger';
     }
 
     protected getStateFromProps() {
@@ -122,7 +122,7 @@ export class Chats extends Block {
             loginValue: '',
 
             goToProfile: () => {
-                this.props.router.go('/profile');
+                this.props.router.go('/settings');
             },
 
            onSubmit: (e: Event) => {
@@ -250,7 +250,12 @@ export class Chats extends Block {
                 event.preventDefault();
                 const id = this.props.store.getState().currentChat;
                 console.log(id);
-               this.props.store.dispatch(removeChat, id)
+                this.props.store.dispatch(removeChat, id);
+                setTimeout(() => {
+                    this.setProps({
+                        chatList: window.store.getState().chats
+                    })
+                }, 500)
             }
         }
     }
@@ -259,8 +264,8 @@ export class Chats extends Block {
         console.log('%c render chat ', 'background: green; color: white');
 
         return `
-            <section class="chats">
-                <div class="chats__left-column">
+            <div class="chats">
+                <asside class="chats__left-column">
                     <div class="chats__top">
                         <div class="chats__go-to-profile">
                         {{{ChatCreate
@@ -290,7 +295,7 @@ export class Chats extends Block {
                                 <div class="chat__avatar-wrapper">
                                     <div class="chat__avatar-content">
                                         {{#if avatar}}
-                                        <img src="{{avatar}}" alt="Аватар">
+                                        <img src="https://ya-praktikum.tech/api/v2/resources{{avatar}}" alt="Аватар">
                                         {{else}}
                                         <img src='https://www.svgrepo.com/download/5158/chat.svg' alt="Аватар">
                                         {{/if}}
@@ -322,8 +327,8 @@ export class Chats extends Block {
                          </div>
                     {{/each}}
                     </div>
-                </div>
-                <div class="chats__right-column">
+                </asside>
+                <main class="chats__right-column">
                     <div class="chat__dialog">
                         <div class="chat__dialog-container">
                             {{{ChatDialogTop
@@ -377,7 +382,7 @@ export class Chats extends Block {
                             }}}
                         </div>
                     </div>
-                </div>
+                </main>
                 <div class="popup popup_add">
                     <input type="checkbox" id="popup-add" class="popup__state" {{modalChecked}}>
                     <div class="popup__wrapper">
@@ -449,7 +454,7 @@ export class Chats extends Block {
                         </div>
                     </div>
                 </div>
-            </section>
+            </div>
         `
     }
 }
