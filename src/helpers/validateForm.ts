@@ -6,7 +6,9 @@ export enum ValidateRuleType  {
     SecondName = 'second_name',
     Phone = 'phone',
     PasswordCheck = 'check_password',
-    DisplayName = 'display_name'
+    DisplayName = 'display_name',
+    AddUser = 'addUser',
+    RemoveUser = 'removeUser'
 }
 
 const regExpValidate = {

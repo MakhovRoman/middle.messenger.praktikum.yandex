@@ -1,110 +1,277 @@
 import Block from 'core/Block';
+import { CoreRouter } from 'core/Router/CoreRouter';
+import { Store } from 'core/Store';
+import { withRouter } from 'helpers/withRouter';
+import { withStore } from 'helpers/withStore';
+import { AppState } from '../../../typings/app';
+import { addUsers, createChat, openChat, removeChat, removeUsers } from 'services/chat-services';
+import { messageOutput } from 'helpers/messageOutput';
 
 type DataType = {
     title: HTMLElement | null,
     avatar: HTMLElement | null
 }
 
-function showCurrentChat(e: Event) {
-    const chatArray: HTMLElement[] = Array.from(document.querySelectorAll('.chat__item'));
-    const chatMeeting = document.querySelector('.chats__meeting-wrapper');
-    const chatDialog = document.querySelector('.chat__dialog-content');
-    const dialogCompanion = document.querySelector('.chat__dialog-companion');
+type ChatItemProps = {
+    avatar: Nullable<string>,
+    created_by: number,
+    id: number,
+    last_message: Nullable<string>,
+    title: string,
+    unread_count: number
+}
 
-    // в дальнейшем с помощью этого индекса буду выбирать контент чатов из массива
-    let currentNumber: number;
-    let currentEl = e.currentTarget;
-    const currentElData: DataType = {
-        title: (currentEl as HTMLElement).querySelector('.chat__info-title > h3'),
-        avatar: (currentEl as HTMLElement).querySelector('.chat__avatar-content'),
-    };
-    const dialogCompanionData: DataType = {
-        title: dialogCompanion!.querySelector('.chat__dialog-name'),
-        avatar: dialogCompanion!.querySelector('.chat__avatar-content'),
-    };
+type ChatProps = {
+    router: CoreRouter;
+    store: Store<AppState>;
+    chatList: ChatItemProps[];
+    userList: Record<string, unknown>[];
+    modalChecked?: string;
+    searchValue?: string;
+    searchAutofocus?: boolean;
+    messagesContent: Record<string, unknown> [];
+    disableMeetingScreen: string;
+    currentChatAvatar?: string;
+    currentChatTitle?: string;
+}
 
-    for(let i = 0; i < chatArray.length; i++) {
-        if (chatArray[i].classList.contains('chat__item_active')) {
-            chatArray[i].classList.remove('chat__item_active');
-        }
-        if (currentEl == chatArray[i]) currentNumber = i;
-    };
-
-    // отображение выбранного чата и диалога
-    (currentEl as HTMLElement).classList.add('chat__item_active');
-    (chatMeeting as HTMLElement).style.display = 'none';
-    (chatDialog as HTMLElement).classList.add('chat__dialog-content_active');
-
-    //вывод аватара и имени собеседника в top
-    if (dialogCompanionData.title && currentElData.title) {
-        dialogCompanionData.title.textContent =currentElData.title.textContent;
-    }
-    if (dialogCompanionData.avatar && currentElData.avatar) {
-        dialogCompanionData.avatar.innerHTML = currentElData.avatar.innerHTML;
+declare global {
+    interface Window {
+      handleChats: (id: number)=> void;
     }
 }
 
+window.handleChats = function (id: number) {
+    window.store.dispatch({
+        toolsActive: 'chat__dialog-content_active',
+        currentChat: id,
+        disableMeetingScreen: 'chats__meeting-wrapper_disable',
+        chatDialogContent: 'chat__dialog-content_active',
+        chatDialogCompanion: 'chat__dialog-companion_active'
+    });
+
+    window.store.dispatch(openChat, id);
+
+    const chatList = document.querySelectorAll('.chat__item') as NodeList;
+        const dialogCompanion = document.querySelector('.chat__dialog-companion');
+        const chatMeeting = document.querySelector('.chats__meeting-wrapper');
+        const dialogCompanionData: DataType = {
+            title: dialogCompanion!.querySelector('.chat__dialog-name'),
+            avatar: dialogCompanion!.querySelector('.chat__avatar-content'),
+        };
+        const chatDialog = document.querySelector('.chat__dialog-content');
+        const submitButton = document.querySelector('.popup_add button[type="submit"]') as HTMLElement;
+        //выделение активного чата
+        chatList?.forEach((item) => {
+            const currentElData: DataType = {
+                title: (item as HTMLElement).querySelector('.chat__info-title > h3'),
+                avatar: (item as HTMLElement).querySelector('.chat__avatar-content img'),
+            };
+
+            if ((item as HTMLElement).dataset.id === id.toString()) {
+                (item as HTMLElement).classList.add('chat__item_active');
+                (chatMeeting as HTMLElement).style.display = 'none';
+                (chatDialog as HTMLElement).classList.add('chat__dialog-content_active');
+                submitButton.dataset.id=`${id}`;
+
+                if (dialogCompanionData.title && currentElData.title) {
+                    window.store.dispatch({currentChatTitle: currentElData.title.textContent})
+                }
+
+
+                if (dialogCompanionData.avatar && currentElData.avatar) {
+                    window.store.dispatch({currentChatAvatar: currentElData.avatar.getAttribute('src')})
+                }
+            }
+        });
+}
 export class Chats extends Block {
     static cName = 'Chats';
-    constructor() {
-        super();
+
+    constructor(props: ChatProps) {
+        super(props);
+
         this.setProps({
-            onClickTop: this.onClickTop.bind(this),
-            onClickBot: this.onClickBot.bind(this),
-            onCheck: this.onCheck.bind(this),
-            onSubmit: this.onSubmit.bind(this)
+            errorMessage: {
+                errorMessageLogin: '',
+            },
+            chatList: () => window.store.getState().chats,
+            userList: () => window.store.getState().userList,
+            modalChecked: '',
+            toolsActive: () => window.store.getState().toolsActive,
+            disableMeetingScreen: () => window.store.getState().disableMeetingScreen,
+            messageContent: () => window.store.getState().messageContent,
+            chatDialogContent: () => window.store.getState().chatDialogContent,
+            currentChatTitle: () => window.store.getState().currentChatTitle,
+            currentChatAvatar: () => window.store.getState().currentChatAvatar,
+            chatDialogCompanion: () => window.store.getState().chatDialogCompanion,
         })
     }
 
-    onClickTop(e: Event) {
-        let target = document.querySelector('.dialog-tools__button');
-        let target2 = document.querySelector('.dialog-tools__button img');
 
-        if (target == e.target || target2 == e.target) {
-            const modal = document.getElementById('modal-add-user');
-            modal?.classList.toggle('chat__modal-tools_active');
-        }
+    componentDidUpdate() {
+        return window.store.getState().screen === 'messenger';
     }
 
-    onClickBot(e: Event) {
-        let target = document.querySelector('.dialog-attach__icon img');
+    protected getStateFromProps() {
+        this.state = {
+            errorMessage: {
+                errorMessageLogin: '',
+            },
 
-        if (target == e.target) {
-            const modal = document.getElementById('modal-attach');
-            modal?.classList.toggle('chat__modal-attach_active');
+            loginValue: '',
+
+            goToProfile: () => {
+                this.props.router.go('/settings');
+            },
+
+           onSubmit: (e: Event) => {
+                e.preventDefault();
+
+                const form = document.querySelector('form[name="send-message"]');
+                const inputs = Array.from(form!.querySelectorAll('input'));
+                const message = document.getElementById('chat__dialog-write');
+
+                const result:any = {};
+
+                for (let i = 0; i < inputs!.length; i++) {
+                    result[inputs![i].name] = inputs![i].value;
+                }
+
+                if ((message as HTMLInputElement).value) {
+                    console.log(result);
+                }
+
+            },
+
+            onClickBot: (e: Event) => {
+                let target = document.querySelector('.dialog-attach__icon img');
+
+                if (target == e.target) {
+                    const modal = document.getElementById('modal-attach');
+                    modal?.classList.toggle('chat__modal-attach_active');
+                }
+            },
+
+            onSendMessage: (e: Event) => {
+                e.preventDefault();
+
+                const message = (document.querySelector('#chat__dialog-write') as HTMLInputElement).value.toString().trim();
+                if (message && message.length > 0) {
+                    const {socket} = this.props.store.getState();
+                    if (socket instanceof WebSocket) {
+                        socket.send(JSON.stringify({
+                            content: message,
+                            type: 'message'
+                        }));
+                        socket.send(JSON.stringify({
+                            content:'0',
+                            type: 'get old'
+                        }));
+                    }
+                }
+            },
+
+            onClickTop: (e: Event) => {
+                let target = document.querySelector('.dialog-tools__button');
+                let target2 = document.querySelector('.dialog-tools__button img');
+
+                if (target == e.target || target2 == e.target) {
+                    const modal = document.getElementById('modal-add-user');
+                    modal?.classList.toggle('chat__modal-tools_active');
+                }
+            },
+
+            createChat: (e: Event) => {
+                e.preventDefault();
+                const title = (document.querySelector('#chat-name') as HTMLInputElement).value;
+                const input = (document.querySelector('#popup-create') as HTMLInputElement);
+
+                input.checked = false;
+                this.props.store.dispatch(createChat, title);
+
+                setTimeout(() => {
+                    this.setProps({
+                        chatList: window.store.getState().chats
+                    })
+                }, 1000)
+            },
+
+            addUser: (event: Event) => {
+                event.preventDefault();
+
+                const response = messageOutput({event, context: this, page: 'chat', type: 'submit'});
+
+                if(response?.errorMessage.errorMessageLogin === '') {
+                    const login = response?.result.login;
+                    const chatId = this.props.store.getState().currentChat;
+                    this.props.store.dispatch(addUsers, {login: login, chatId: chatId});
+
+                    const checkbox = document.querySelector('#popup-add') as HTMLInputElement;
+                    const modalTools = document.querySelector('#modal-add-user') as HTMLInputElement;
+
+                    checkbox.checked = false;
+                    if (modalTools.classList.contains('chat__modal-tools_active')) {
+                        modalTools.classList.remove('chat__modal-tools_active');
+                    }
+                }
+            },
+
+            removeUser: (event: Event) => {
+                event.preventDefault();
+
+                const response = messageOutput({event, context: this, page: 'chat', type: 'submit'});
+                if(response?.errorMessage.errorMessageLogin === '') {
+
+                    const login = response?.result.login;
+
+                    const chatId = this.props.store.getState().currentChat;
+                    this.props.store.dispatch(removeUsers, {login: login, chatId: chatId});
+
+                    const checkbox = document.querySelector('.popup_remove input[name="removeUser"]') as HTMLInputElement;
+                    const modalTools = document.querySelector('#modal-add-user') as HTMLInputElement;
+
+                    checkbox.checked = false;
+                    if (modalTools.classList.contains('chat__modal-tools_active')) {
+                        modalTools.classList.remove('chat__modal-tools_active');
+                    }
+                }
+            },
+
+            onInput: (event: InputEvent) => {
+                messageOutput({event, context: this, page: 'chat'});
+            },
+
+            onFocus: (event: InputEvent) => {
+                messageOutput({event, context: this, page: 'chat', type: 'focus'});
+            },
+
+            onDelete: (event: Event) => {
+                event.preventDefault();
+                const id = this.props.store.getState().currentChat;
+                console.log(id);
+                this.props.store.dispatch(removeChat, id);
+                setTimeout(() => {
+                    this.setProps({
+                        chatList: window.store.getState().chats
+                    })
+                }, 500)
+            }
         }
-    }
-
-    onSubmit(e: Event) {
-        e.preventDefault();
-
-        const form = document.querySelector('form[name="send-message"]');
-        const inputs = Array.from(form!.querySelectorAll('input'));
-        const message = document.getElementById('chat__dialog-write');
-
-        const result:any = {};
-
-        for (let i = 0; i < inputs!.length; i++) {
-            result[inputs![i].name] = inputs![i].value;
-        }
-
-        if ((message as HTMLInputElement).value) {
-            console.log(result);
-        }
-
-    }
-
-    onCheck(e: Event) {
-        showCurrentChat(e);
     }
 
     protected render() {
         return `
-            <section class="chats">
-                <div class="chats__left-column">
+            <div class="chats">
+                <asside class="chats__left-column">
                     <div class="chats__top">
                         <div class="chats__go-to-profile">
-                            <a href="../profile/profile.html" class="chats__link">Профиль ❯</a>
+                        {{{ChatCreate
+
+                        }}}
+                            {{{GoToProfile
+                                goToProfile=goToProfile
+                            }}}
                         </div>
                         <div class="chats__search">
                             <input type="text" id="chat-search" placeholder="Поиск">
@@ -119,42 +286,133 @@ export class Chats extends Block {
                             </svg>
                         </div>
                     </div>
-                    {{{ChatList
-                        onCheck=onCheck
-                    }}}
-                </div>
-                <div class="chats__right-column">
+                    <div class="chat-list custom-scrollbar">
+                    {{#each chatList}}
+                        <div class="chat__item" data-id={{id}}  onclick='handleChats({{id}})'>
+                            <div class="chat__item-container">
+                                <div class="chat__avatar-wrapper">
+                                    <div class="chat__avatar-content">
+                                        {{#if avatar}}
+                                        <img
+                                            src="https://ya-praktikum.tech/api/v2/resources{{avatar}}"
+                                            onerror="this.src='https://www.svgrepo.com/download/5158/chat.svg'"
+                                            alt="Аватар"
+                                        >
+                                        {{else}}
+                                        <img
+                                            src='https://www.svgrepo.com/download/5158/chat.svg'
+                                            onerror="this.src='https://www.svgrepo.com/download/5158/chat.svg'"
+                                            alt="Аватар"
+                                        >
+                                        {{/if}}
+                                    </div>
+                                </div>
+                                <div class="chat__info">
+                                    <div class="chat__info-top chat__info-row">
+                                        <div class="chat__info-title">
+                                            <h3>{{title}}</h3>
+                                        </div>
+                                        <div class="chat__info-date">
+
+                                        </div>
+                                    </div>
+                                    <div class="chat__info-bot chat__info-row">
+
+                                        <div class="chat__info-message">
+                                            <p>{{last_message.content}}</p>
+                                        </div>
+
+                                        {{#if unread_message}}
+                                        <div class="chat__info-unread">
+                                            <span>{{unread_message}}</span>
+                                        </div>
+                                        {{/if}}
+                                    </div>
+                                </div>
+                            </div>
+                         </div>
+                    {{/each}}
+                    </div>
+                </asside>
+                <main class="chats__right-column">
                     <div class="chat__dialog">
                         <div class="chat__dialog-container">
                             {{{ChatDialogTop
                                 onClick=onClickTop
                                 add_user_modal=add_user_modal
+                                toolsActive=toolsActive
+                                currentChatAvatar=currentChatAvatar
+                                currentChatTitle=currentChatTitle
+                                chatDialogCompanion=chatDialogCompanion
+                                onDelete=onDelete
                             }}}
-                            <div class="chats__meeting-wrapper">
+                            <div class="chats__meeting-wrapper {{disableMeetingScreen}}">
                                 <p class="chats__meeting">Выберите чат чтобы отправить сообщение</p>
                             </div>
-                            <div class="chat__dialog-content custom-scrollbar">
-                                {{{ChatMessageGroup}}}
-                                {{{ChatMessageGroup}}}
-                                {{{ChatMessageGroup}}}
+                            <div class="chat__dialog-content custom-scrollbar {{chatDialogContent}}">
+                                {{#each messageContent}}
+                                    <div class="chat__message-date">
+                                        <span>{{date}}</span>
+                                    </div>
+                                    {{#each messages}}
+                                        {{#if myContent}}
+                                            <div class="chat__message-out chat__message-wrapper">
+                                                <div class="chat__message-content">
+                                                    <span>
+                                                        {{myContent}}
+                                                    </span>
+                                                    <div class="chat__message-time">
+                                                        <span>{{time}}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {{/if}}
+                                        {{#if alienContent}}
+                                            <div class="chat__message-in chat__message-wrapper">
+                                                <div class="chat__message-content">
+                                                    <span>
+                                                        {{alienContent}}
+                                                    </span>
+                                                    <div class="chat__message-time">
+                                                        <span>{{time}}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {{/if}}
+                                    {{/each}}
+                                {{/each}}
                              </div>
                             {{{ChatDialogBot
                                 onClick=onClickBot
-                                onSubmit=onSubmit
+                                onSubmit=onSendMessage
                             }}}
                         </div>
                     </div>
-                </div>
+                </main>
                 <div class="popup popup_add">
-                    <input type="checkbox" id="popup-add" class="popup__state">
+                    <input type="checkbox" id="popup-add" class="popup__state" {{modalChecked}}>
                     <div class="popup__wrapper">
                         <label for="popup-add" class="popup__bg"></label>
                         <div class="popup__container">
                             <h3 class="popup__title">Добавить пользователя</h3>
                             <div class="popup__input">
-                                <input type="text" placeholder="Логин" id="add-user" class="form__item-input">
+                                {{{InputControlled
+                                    type="text"
+                                    placeholder="Логин"
+                                    class="form__item-input"
+                                    name="addUser"
+                                    value=searchValue
+                                    onInput=onInput
+                                    onFocus=onFocus
+                                    error=errorMessage.errorMessageLogin
+                                    ref="addUser"
+                                 }}}
                             </div>
-                            <button type="submit" class="button button-submit">Добавить</button>
+                            {{{Button
+                                onSubmit=addUser
+                                text="Добавить"
+                                class="button button-submit"
+                            }}}
                         </div>
                     </div>
                 </div>
@@ -165,13 +423,55 @@ export class Chats extends Block {
                         <div class="popup__container">
                             <h3 class="popup__title">Удалить пользователя</h3>
                             <div class="popup__input">
-                                <input type="text" placeholder="Логин" id="remove-user" class="form__item-input">
+                            {{{InputControlled
+                                type="text"
+                                placeholder="Логин"
+                                class="form__item-input"
+                                name="removeUser"
+                                value=searchValue
+                                onInput=onInput
+                                onFocus=onFocus
+                                error=errorMessage.errorMessageLogin
+                                ref="removeUser"
+                             }}}
                             </div>
-                            <button type="submit" class="button button-submit">Удалить</button>
+                            {{{Button
+                                onSubmit=removeUser
+                                text="Удалить"
+                                class="button button-submit"
+                                name="removeUser"
+                            }}}
                         </div>
                     </div>
                 </div>
-            </section>
+                <div class="popup popup_create">
+                    <input type="checkbox" id="popup-create" class="popup__state">
+                    <div class="popup__wrapper">
+                        <label for="popup-create" class="popup__bg"></label>
+                        <div class="popup__container">
+                            <h3 class="popup__title">Создать чат</h3>
+                            <div class="popup__input">
+                                <input type="text" placeholder="Имя чата" id="chat-name" class="form__item-input">
+                            </div>
+                            {{{Button
+                                text="Создать"
+                                onSubmit=createChat
+                            }}}
+                        </div>
+                    </div>
+                </div>
+            </div>
         `
     }
 }
+
+function fn(state = window.store.getState()) {
+    return {
+        disableMeetingScreen: state.disableMeetingScreen,
+        messageContent: state.messageContent,
+        chatDialogContent: state.chatDialogContent,
+    }
+}
+
+// @ts-expect-error No base constructor has the specified
+export default withRouter(withStore(Chats), fn);

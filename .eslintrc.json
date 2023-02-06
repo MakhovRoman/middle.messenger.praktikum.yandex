@@ -15,7 +15,7 @@
         "@typescript-eslint"
     ],
     "rules": {
-        "max-len": [1, 125],
+        "max-len": [1, 130],
         "quotes": ["error", "single"]
     }
 }

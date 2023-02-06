@@ -30,7 +30,8 @@
         margin-right: 10px;
 
         & img {
-            object-fit: cover;
+            object-fit: contain;
+            max-width: 100%;
         }
     }
 

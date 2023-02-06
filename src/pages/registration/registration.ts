@@ -1,15 +1,50 @@
 import Block from 'core/Block';
+import { CoreRouter } from 'core/Router/CoreRouter';
 import { messageOutput } from 'helpers/messageOutput';
+import { withRouter } from 'helpers/withRouter';
+import { withStore } from 'helpers/withStore';
+import { AppState } from '../../../typings/app';
+import { Store } from 'core/Store';
+import { signUp } from 'services/auth-services';
 
-export class Registration extends Block {
+type RegistrationsPageProps = {
+    router: CoreRouter;
+    store: Store<AppState>;
+    formError?: () => string | null;
+}
+
+export class Registration extends Block<RegistrationsPageProps> {
     static cName = 'Registration';
-    constructor() {
-        super();
-        this.setProps({
-            onSubmit: this.onSubmit.bind(this),
-            onInput: this.onInput.bind(this),
-            onBlur: this.onBlur.bind(this),
-            onFocus: this.onFocus.bind(this),
+    constructor(props: RegistrationsPageProps) {
+        super(props);
+    }
+
+    componentDidUpdate() {
+        return window.store.getState().screen === 'sign-up';
+    }
+
+    protected getStateFromProps() {
+        this.state = {
+            onNavigateNext: (event: Event) => {
+                event.preventDefault();
+                this.props.router.go('/');
+            },
+            onInput: (event: InputEvent) => {
+                messageOutput({event, context: this, page: 'registration'});
+            },
+            onBlur: (event: FocusEvent) => {
+                messageOutput({event, context: this, page: 'registration'});
+            },
+            onFocus: (event: FocusEvent) => {
+                messageOutput({event, context: this, page: 'registration', type: 'focus'})
+            },
+            onSubmit: (event: Event) => {
+                let response = messageOutput({event, context: this, page: 'registration', type: 'submit'});
+
+                if (response?.result.password) {
+                    this.props.store.dispatch(signUp, response.result);
+                }
+            },
             errorMessage: {
                 errorMessageLogin: '',
                 errorMessagePassword: '',
@@ -27,34 +62,16 @@ export class Registration extends Block {
             phoneValue: '',
             passwordCheckValue: '',
             class: 'form__item-input',
-            result: {}
-        })
-    }
-
-    onInput(e: InputEvent) {
-        const context = this;
-        messageOutput({e, context, page: 'registration'});
-    }
-
-    onBlur(e: FocusEvent) {
-        const context = this;
-        messageOutput({e, context, page: 'registration'});
-    }
-
-    onFocus(e: FocusEvent) {
-        const context = this;
-        messageOutput({e, context, page: 'registration', type: 'focus'})
-    }
-
-    onSubmit(event: Event) {
-        const context = this;
-        messageOutput({e: event, context, page: 'registration', type: 'submit'});
+            result: {},
+            router: window.router,
+            store: window.store
+        }
     }
 
 
     protected render() {
         return `
-            <section class="wrapper-autorization wrapper-registration">
+            <main class="wrapper-autorization wrapper-registration">
                 <div class="content-autorization content-registration">
                     <h1 class="content-autorization__title">Регистрация</h1>
                     <form action="" class="content-autorization__form form">
@@ -150,10 +167,13 @@ export class Registration extends Block {
                             class=class
                         }}}
                         {{{Button text="Зарегистрироваться" onSubmit=onSubmit}}}
-                        {{{BackToAutLink}}}
+                        {{{GoToAuthorization onNavigateNext = onNavigateNext}}}
                     </form>
                 </div>
-            </section>
+            </main>
         `
     }
 }
+
+
+export default withRouter(withStore(Registration));

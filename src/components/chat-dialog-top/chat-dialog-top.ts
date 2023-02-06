@@ -1,6 +1,9 @@
 import { Block } from 'core';
 
 interface ChatDialogTopProps {
+    currentChatAvatar: string,
+    currentChatTitle: string,
+    chatDialogCompanion: string,
     onClick: () => void,
 }
 
@@ -21,13 +24,13 @@ export class ChatDialogTop extends Block {
     protected render() {
         return `
             <div class="chat__dialog-top chat__dialog-row">
-                <div class="chat__dialog-companion">
+                <div class="chat__dialog-companion {{chatDialogCompanion}}">
                     <div class="chat__avatar-content">
-
+                        <img src="{{currentChatAvatar}}" alt="Аватар">
                     </div>
-                    <h3 class="chat__dialog-name"></h3>
+                    <h3 class="chat__dialog-name">{{currentChatTitle}}</h3>
                 </div>
-                <div class="chat__dialog-tools">
+                <div class="chat__dialog-tools {{toolsActive}}">
                     <button class="dialog-tools__button" onClick={{onClick}}>
                         <img src="${tools.src}" alt="tools">
                     </button>
@@ -47,6 +50,12 @@ export class ChatDialogTop extends Block {
                                 </div>
                                 <h3 class="chat__modal-text">Удалить пользователя</h3>
                             </label>
+                        </div>
+                        <div class="chat__modal-item">
+                            {{{Button
+                                text="Удалить чат"
+                                onSubmit=onDelete
+                            }}}
                         </div>
                     </div>
                 </div>

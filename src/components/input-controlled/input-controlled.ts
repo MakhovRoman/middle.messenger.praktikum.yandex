@@ -10,6 +10,7 @@ interface InputControlledProps {
     error?: string;
     status?: string;
     class?: string;
+    id?: string;
 }
 
 export class InputControlled extends Block {

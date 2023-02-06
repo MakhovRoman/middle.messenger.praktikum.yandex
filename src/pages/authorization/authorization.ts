@@ -1,15 +1,55 @@
 import Block from 'core/Block';
+import { CoreRouter } from 'core/Router/CoreRouter';
+import { Store } from 'core/Store';
 import { messageOutput } from 'helpers/messageOutput';
-export class Authorization extends Block {
+import { AppState } from '../../../typings/app';
+import { withRouter } from 'helpers/withRouter';
+import { withStore } from 'helpers/withStore';
+import { login } from 'services/auth-services';
+
+type AuthorizationPageProps = {
+    router: CoreRouter;
+    store: Store<AppState>;
+    formError?: () => string | null;
+};
+
+export class Authorization extends Block<AuthorizationPageProps> {
     static cName = 'Authorization';
-    constructor() {
-        super();
+
+    constructor(props: AuthorizationPageProps) {
+        super(props);
 
         this.setProps({
-            onSubmit: this.onSubmit.bind(this),
-            onInput: this.onInput.bind(this),
-            onBlur: this.onBlur.bind(this),
-            onFocus: this.onFocus.bind(this),
+            formError: () => this.props.store.getState().loginFormError
+        });
+    }
+
+    componentDidUpdate() {
+        return window.store.getState().screen === '/';
+    }
+
+    protected getStateFromProps() {
+        this.state = {
+            onSubmit: (event: Event) => {
+               let response = messageOutput({event, context: this, page: 'autorization', type: 'submit'});
+
+               if (response?.errorMessage.errorMessageLogin == '' && response.errorMessage.errorMessagePassword == '') {
+                    this.props.store.dispatch(login, response.result);
+                }
+            },
+            onBlur: (event: FocusEvent) => {
+                  messageOutput({event, context: this, page: 'autorization'});
+            },
+            onFocus: (event: FocusEvent) => {
+                messageOutput({event, context: this, page: 'autorization', type: 'focus'})
+            },
+            onInput: (event: InputEvent) => {
+                messageOutput({event, context: this, page: 'autorization'});
+            },
+            onNavigateNext: (event: Event) => {
+                event.preventDefault();
+                this.props.router.go('/sign-up');
+            },
             errorMessage: {
                 errorMessageLogin: '',
                 errorMessagePassword: ''
@@ -17,67 +57,52 @@ export class Authorization extends Block {
             loginValue: '',
             passwordValue: '',
             class: 'form__item-input',
-            result: {}
-        });
-    }
-
-    onInput(e: InputEvent) {
-        const context = this;
-        messageOutput({e, context, page: 'autorization'});
-    }
-
-    onFocus(e: FocusEvent) {
-        const context = this;
-        messageOutput({e, context, page: 'autorization', type: 'focus'})
-    }
-
-    onBlur(e: FocusEvent) {
-        const context = this;
-        messageOutput({e, context, page: 'autorization'});
-    }
-
-    onSubmit(event: Event) {
-        const context = this;
-        messageOutput({e: event, context, page: 'autorization', type: 'submit'});
+            result: {},
+        }
     }
 
     protected render() {
         return `
-            <section class="wrapper-autorization">
-                <div class="content-autorization">
-                    <h1 class="content-autorization__title">Вход</h1>
-                    <form action="" class="content-autorization__form form">
-                        {{{InputControlled
-                            onInput=onInput
-                            onFocus=onFocus
-                            onBlur=onBlur
-                            type="text"
-                            name="login"
-                            title="Логин"
-                            placeholder="Логин"
-                            ref="loginInput"
-                            value=loginValue
-                            error=errorMessage.errorMessageLogin
-                            class=class
-                        }}}
-                        {{{InputControlled
-                            onInput=onInput
-                            onFocus=onFocus
-                            onBlur=onBlur
-                            type="password"
-                            name="password"
-                            title="Пароль"
-                            placeholder="Пароль"
-                            ref="passwordInput"
-                            value=passwordValue
-                            error=errorMessage.errorMessagePassword
-                            class=class
-                        }}}
-                        {{{Button text="Авторизоваться" onSubmit=onSubmit}}}
-                        <a href="../registration/registration.html" class="link back-to__link">Нет аккаунта?</a>
-                    </form>
-                </div>
-            </section>
+            <main class="main">
+                <section class="wrapper-autorization">
+                    <div class="content-autorization">
+                        <h1 class="content-autorization__title">Вход</h1>
+                        <form action="" class="content-autorization__form form">
+                            {{{InputControlled
+                                onInput=onInput
+                                onFocus=onFocus
+                                onBlur=onBlur
+                                type="text"
+                                name="login"
+                                title="Логин"
+                                placeholder="Логин"
+                                ref="loginInput"
+                                value=loginValue
+                                error=errorMessage.errorMessageLogin
+                                class=class
+                            }}}
+                            {{{InputControlled
+                                onInput=onInput
+                                onFocus=onFocus
+                                onBlur=onBlur
+                                type="password"
+                                name="password"
+                                title="Пароль"
+                                placeholder="Пароль"
+                                ref="passwordInput"
+                                value=passwordValue
+                                error=errorMessage.errorMessagePassword
+                                class=class
+                            }}}
+                            {{{Button text="Авторизоваться" onSubmit=onSubmit}}}
+                            <div class="response-error">{{formError}}</div>
+                            {{{GoToRegistration onNavigateNext=onNavigateNext}}}
+                        </form>
+                    </div>
+                </section>
+            </main>
         `
     }
 }
+
+export default withRouter(withStore(Authorization));

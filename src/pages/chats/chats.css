@@ -16,6 +16,10 @@
             width: 100%;
             height: 100%;
             @include flex-center;
+
+            &_disable {
+                display: none;
+            }
         }
     }
 
@@ -41,11 +45,24 @@
 
     &__go-to-profile {
         margin-bottom: 23px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    &__create {
+        width: 30px;
+        height: 30px;
+        cursor: pointer;
+
+        & svg path {
+            fill: $color-link;
+        }
     }
 
     &__link {
         display: flex;
         justify-content: flex-end;
+        align-items: center;
         @include setFontSize(12px, 500);
         color: $color-placeholder;
     }
@@ -114,6 +131,11 @@
     &-companion {
         @include flex-center;
         height: 100%;
+        display: none;
+
+        &_active {
+            display: flex;
+        }
 
         .chat__avatar-content {
             height: 100%;
@@ -133,6 +155,11 @@
 
     &-tools {
         position: relative;
+        display: none;
+
+        &_active {
+            display: block;
+        }
     }
 
     &-content {
