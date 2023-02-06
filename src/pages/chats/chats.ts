@@ -293,9 +293,17 @@ export class Chats extends Block {
                                 <div class="chat__avatar-wrapper">
                                     <div class="chat__avatar-content">
                                         {{#if avatar}}
-                                        <img src="https://ya-praktikum.tech/api/v2/resources{{avatar}}" alt="Аватар">
+                                        <img
+                                            src="https://ya-praktikum.tech/api/v2/resources{{avatar}}"
+                                            onerror="this.src='https://www.svgrepo.com/download/5158/chat.svg'"
+                                            alt="Аватар"
+                                        >
                                         {{else}}
-                                        <img src='https://www.svgrepo.com/download/5158/chat.svg' alt="Аватар">
+                                        <img
+                                            src='https://www.svgrepo.com/download/5158/chat.svg'
+                                            onerror="this.src='https://www.svgrepo.com/download/5158/chat.svg'"
+                                            alt="Аватар"
+                                        >
                                         {{/if}}
                                     </div>
                                 </div>
