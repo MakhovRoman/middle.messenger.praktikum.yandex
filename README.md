@@ -5,7 +5,7 @@ https://github.com/MakhovRoman/middle.messenger.praktikum.yandex/pull/3#issue-15
 https://deploy--creative-truffle-ef04cb.netlify.app/
 
 /////////////////////
-/////  Sprint 3  ////
+/////  Sprint 4  ////
 /////////////////////
 
 Commands:
