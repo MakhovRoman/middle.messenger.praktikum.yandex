@@ -71,7 +71,7 @@ describe('pages/Profile', () => {
       button.click();
     });
 
-    await step('check submit button',() => {
+    await step('check submit button', () => {
       const submitButton = document.querySelector('form[name="profile"] .profile__submit') as HTMLDivElement;
       waitFor(() => expect(submitButton.style.display).toEqual('flex'));
     });
@@ -80,8 +80,11 @@ describe('pages/Profile', () => {
       const phoneInput = document.querySelector('input[name="phone"]') as HTMLInputElement;
       phoneInput.value = '1234567890';
 
-      const button = document.querySelector('form[name="profile"] .button-submit') as HTMLButtonElement;
-      button.click();
+      const button = getByTestId(document.body, 'change-profile-button');
+      setTimeout(() => {
+        button.click();
+      }, 1000)
+
     });
 
     await step('check user update data', () => {

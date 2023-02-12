@@ -428,6 +428,7 @@ export class Profile extends Block {
                         {{{Button
                             text="Поменять"
                             onSubmit=onSubmit
+                            dataTestId="change-profile-button"
                         }}}
                     </div>
                 </div>

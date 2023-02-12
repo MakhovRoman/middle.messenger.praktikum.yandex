@@ -11,5 +11,5 @@ https://deploy--creative-truffle-ef04cb.netlify.app/
 Commands:
     "dev": "parcel src/index.html --no-cache --open",
     "start": "parcel build src/index.html && node ./server.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "build": "parcel build src/index.html",
