@@ -64,7 +64,7 @@ export class Authorization extends Block<AuthorizationPageProps> {
     protected render() {
         return `
             <main class="main">
-                <section class="wrapper-autorization">
+                <section class="wrapper-autorization" data-testid="signin-screen">
                     <div class="content-autorization">
                         <h1 class="content-autorization__title">Вход</h1>
                         <form action="" class="content-autorization__form form">

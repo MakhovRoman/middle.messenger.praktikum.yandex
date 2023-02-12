@@ -4,7 +4,8 @@ interface LinkProps {
     onClick?: () => void,
     href?: string,
     class?: string,
-    title?: string
+    title?: string,
+    dataTestId?: string
 }
 
 export class Link extends Block {
@@ -19,7 +20,7 @@ export class Link extends Block {
     }
     protected render() {
         return `
-            <a href="{{href}}" class="{{class}}">{{title}}</a>
+            <a href="{{href}}" class="{{class}}" {{#if dataTestId}}data-testid="{{dataTestId}}"{{/if}}>{{title}}</a>
         `
     }
 }

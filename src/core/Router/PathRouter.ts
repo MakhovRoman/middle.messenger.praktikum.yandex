@@ -33,15 +33,15 @@ export class PathRouter implements CoreRouter {
       // }
 
       if (!found) {
-        if(!window.store.getState().user) {
-          window.router.replace('/')
+        if(!window.store?.getState().user) {
+          window.router?.replace('/')
         } else {
-          window.router.replace('/404');
+          window.router?.replace('/404');
         }
       }
 
-      if (window.store.getState().user && window.store.getState().screen === '/') {
-        window.router.replace('/messenger');
+      if (window.store?.getState().user && window.store?.getState().screen === '/') {
+        window.router?.replace('/messenger');
     }
     }
 
@@ -66,5 +66,9 @@ export class PathRouter implements CoreRouter {
 
     forward() {
       window.history.forward();
+    }
+
+    getRoutes() {
+      return this.routes;
     }
   }

@@ -1,5 +1,5 @@
 import Block from 'core/Block';
-import template from 'bundle-text:./button.hbs';
+// import template from 'bundle-text:./button.hbs';
 
 interface ButtonProps {
     text: string;
@@ -15,6 +15,8 @@ export class Button extends Block {
     }
 
     protected render() {
-        return template;
+        return `
+            <button type="submit" class="button button-submit">{{text}}</button>
+        `;
     }
 }

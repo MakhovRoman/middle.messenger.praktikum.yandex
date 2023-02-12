@@ -1,6 +1,6 @@
 import Block from 'core/Block';
 
-interface InputProps {
+export interface InputProps {
     onInput?: () => void;
     onBlur?: () => void;
     onFocus?: () => void;

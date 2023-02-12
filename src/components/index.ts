@@ -4,7 +4,7 @@ export { default as ChatDialogTop } from './chat-dialog-top';
 export { default as ChatItem } from './chat-item';
 export { default as ChatList } from './chat-list';
 export { default as ChatMessageGroup } from './chat-message-group';
-export { default as ErrorPage } from './error-page';
+
 export { default as Input } from './input';
 export { default as InputControlled } from './input-controlled';
 export { default as InputError } from './input-error';
