@@ -44,6 +44,7 @@
     "eslint": "8.30.0",
     "handlebars-jest": "1.0.0",
     "html-webpack-plugin": "5.5.0",
+    "husky": "8.0.3",
     "identity-obj-proxy": "3.0.0",
     "jest": "27.5.1",
     "mini-css-extract-plugin": "2.7.2",
