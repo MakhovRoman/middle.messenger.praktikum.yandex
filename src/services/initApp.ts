@@ -13,6 +13,7 @@ async function initApp(dispatch: Dispatch<AppState>) {
         const response = await authAPI.getUserInfo() as XMLHttpRequest;
 
         if (response.status !== 200) {
+            console.log('ggg');
             window.router.replace('/');
         }
 

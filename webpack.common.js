@@ -39,28 +39,15 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.ts$/,
-        use: [
-          {
-            loader: 'ts-loader',
-            options: {
-              configFile: path.resolve(__dirname, 'tsconfig.json'),
-              transpileOnly: true
-            },
-          },
-        ],
+        test: /\.(js|ts)$/,
+        use: 'babel-loader',
         exclude: /(node_modules)/,
       },
       {
         test: /\.css$/,
         use: [
           MiniCssExtractPlugin.loader,
-          {
-            loader: 'css-loader',
-            options: {
-              importLoaders: 1,
-            },
-          },
+          'css-loader',
           'postcss-loader',
 
         ]
