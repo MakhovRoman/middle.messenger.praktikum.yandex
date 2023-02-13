@@ -24,15 +24,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     renderDOM(new Loader({}));
 
-    store.on('changed', (prevState, nextState) => {
-      if(process.env.DEBUG) {
-        console.log(
-          '%cstore updated',
-          'background: #222; color: #bada55',
-          prevState, nextState,
-        );
-      }
-    });
+    // store.on('changed', (prevState, nextState) => {
+    //   if(process.env.DEBUG) {
+    //     console.log(
+    //       '%cstore updated',
+    //       'background: #222; color: #bada55',
+    //       prevState, nextState,
+    //     );
+    //   }
+    // });
 
     initRouter(router, store);
 

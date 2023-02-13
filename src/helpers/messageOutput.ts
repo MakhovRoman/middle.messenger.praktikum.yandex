@@ -160,7 +160,6 @@ export const messageOutput = (props: MessageOutputProps) => {
     }
 
     if (props.type === MessageOutputTypes.Submit) {
-        console.log(props)
         props.event.preventDefault();
 
         let authorizationData!: AuthorizationDataType;

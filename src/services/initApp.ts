@@ -22,7 +22,7 @@ async function initApp(dispatch: Dispatch<AppState>) {
 
 
         //@ts-ignore
-        dispatch({user: transformUser(response.response as UserDTO)});
+        dispatch({user: transformUser(response.response as UserDTO), loading: false});
 
         // if(!window.store.getStat().user) {
         //     console.log('ggg')
