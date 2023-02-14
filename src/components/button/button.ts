@@ -1,6 +1,4 @@
-/* eslint-disable max-len */
 import Block from 'core/Block';
-// import template from 'bundle-text:./button.hbs';
 
 interface ButtonProps {
     text: string;
@@ -21,7 +19,11 @@ export class Button extends Block {
 
     protected render() {
         return `
-            <button type="submit" {{#if dataTestId}}data-testid="{{dataTestId}}"{{/if}}class="button button-submit">{{text}}</button>
+            <button
+                type="submit"
+                {{#if dataTestId}}data-testid="{{dataTestId}}"{{/if}}
+                class="button button-submit">{{text}}
+            </button>
         `;
     }
 }

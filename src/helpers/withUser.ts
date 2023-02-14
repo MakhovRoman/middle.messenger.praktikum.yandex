@@ -1,6 +1,5 @@
 import { BlockClass } from 'core/Block';
 import { AppState, User } from '../../typings/app';
-import { isEqual } from './isEqual';
 
 type WithUserProps = {user: Nullable<User>};
 

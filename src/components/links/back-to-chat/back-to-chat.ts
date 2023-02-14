@@ -1,4 +1,3 @@
-import template from 'bundle-text:./back-to-chat.hbs';
 import Block from 'core/Block';
 
 interface BackToChatLinkProps {

@@ -28,10 +28,6 @@ export class PathRouter implements CoreRouter {
         return false;
       });
 
-      // if (!found && this.routes['*']) {
-      //   this.routes['*']();
-      // }
-
       if (!found) {
         if(!window.store?.getState().user) {
           window.router?.replace('/')
@@ -42,7 +38,7 @@ export class PathRouter implements CoreRouter {
 
       if (window.store?.getState().user && window.store?.getState().screen === '/') {
         window.router?.replace('/messenger');
-    }
+      }
     }
 
     use(hash: string, callback: Function) {

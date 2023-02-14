@@ -1,8 +1,6 @@
 import { renderBlock, step } from 'tests/renderUtils'
 import { Profile } from '../profile'
 import { getByTestId, queryByTestId, waitFor } from '@testing-library/dom';
-import exp from 'constants';
-
 
 jest.mock('nanoid', () => ({ nanoid: () => Math.floor(Math.random() * (1000 - 100) + 100) }));
 
@@ -16,7 +14,6 @@ const USER_MOCK = {
   phone: '294875948235',
   secondName: 'DgsdfsdfsdfgD'
 }
-
 
 describe('pages/Profile', () => {
   it('should logout from profile and redirect to login', async () => {

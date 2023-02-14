@@ -1,5 +1,4 @@
-import { Dispatch } from 'core/Store';
-import { AppState, DispatchStateHandler, User } from '../../typings/app';
+import { DispatchStateHandler, User } from '../../typings/app';
 import apiHasError from 'helpers/apiHasError';
 import usersAPI from 'api/usersAPI';
 import authAPI from 'api/authAPI';

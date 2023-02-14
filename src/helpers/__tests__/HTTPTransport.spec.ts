@@ -1,8 +1,6 @@
 import { waitFor } from '@testing-library/dom';
 import URL from 'api/urls';
-import exp from 'constants';
 import { HTTPTransport } from 'helpers/HTTPTransport';
-import { step } from 'tests/renderUtils';
 
 jest.mock('nanoid', () => ({ nanoid: () => Math.floor(Math.random() * (1000 - 100) + 100) }));
 

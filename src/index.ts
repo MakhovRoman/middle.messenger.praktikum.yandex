@@ -8,7 +8,7 @@ import { AppState } from '../typings/app';
 import Loader from 'pages/loader';
 import initApp from './services/initApp';
 
-
+//@ts-expect-error
 Object.values(components).forEach((Component: BlockConstructable) => {
     registerComponent(Component);
 });
@@ -20,19 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.router = router;
     window.store = store;
 
-
-
     renderDOM(new Loader({}));
-
-    // store.on('changed', (prevState, nextState) => {
-    //   if(process.env.DEBUG) {
-    //     console.log(
-    //       '%cstore updated',
-    //       'background: #222; color: #bada55',
-    //       prevState, nextState,
-    //     );
-    //   }
-    // });
 
     initRouter(router, store);
 

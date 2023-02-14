@@ -68,7 +68,6 @@ export class Registration extends Block<RegistrationsPageProps> {
         }
     }
 
-
     protected render() {
         return `
             <main class="wrapper-autorization wrapper-registration">

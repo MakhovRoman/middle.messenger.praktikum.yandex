@@ -423,7 +423,6 @@ export class Profile extends Block {
                             status=status
                         }}}
                     </div>
-
                     <div class="profile__submit" style="display: {{status_submit}}">
                         {{{Button
                             text="Поменять"

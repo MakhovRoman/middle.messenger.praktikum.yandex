@@ -17,7 +17,6 @@ export class GoToProfile extends Block {
     }
 
     protected render() {
-
         return `
             <button class="chats__link" goToProfile={{goToProfile}}>Профиль ❯</button>
         `

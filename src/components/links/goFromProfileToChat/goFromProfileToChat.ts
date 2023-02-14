@@ -17,7 +17,6 @@ export class GoFromProfileToChat extends Block {
     }
 
     protected render() {
-
         return `
             <button class="link" id="back-from-profile-to-chat" onNavigateBack={{onNavigateBack}}>
                 <div class="back-from-profile">

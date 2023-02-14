@@ -4,7 +4,6 @@ import renderDOM from 'core/renderDOM';
 import { Store } from 'core/Store';
 import { AppState } from '../../../typings/app';
 
-
 const routes = [
   {
     path: '/',

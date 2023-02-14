@@ -17,7 +17,6 @@ export class GoToAuthorization extends Block {
     }
 
     protected render() {
-
         return `
             <button class="link back-to__link" onNavigateNext={{onNavigateNext}}>Войти</button>
         `

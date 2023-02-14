@@ -1,4 +1,3 @@
-import input from 'components/input';
 import { ValidateRuleType } from './validateForm';
 import { validateForm } from './validateForm';
 

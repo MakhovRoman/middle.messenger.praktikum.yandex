@@ -31,7 +31,6 @@ export class Input extends Block {
         });
     }
 
-
     protected render() {
         return `
         <input

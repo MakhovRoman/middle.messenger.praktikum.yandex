@@ -3,14 +3,13 @@
   "version": "1.0.0",
   "description": "praktikum",
   "scripts": {
-    "dev": "parcel src/index.html --no-cache --open",
-    "start": "parcel build src/index.html && node ./server.js",
+    "dev": "webpack serve --config webpack.dev.js",
+    "build": "webpack --config webpack.prod.js",
+    "start": "node ./server.js",
     "test": "jest",
-    "build": "parcel build src/index.html",
-    "startTS": "parcel src/index.html --no-cache --open",
-    "webpackDev": "webpack serve --open --config webpack.dev.js",
-    "webpackProd": "webpack --config webpack.prod.js",
-    "webpackStart": "webpack --config webpack.prod.js && node ./server.js"
+    "prepare": "husky install",
+    "lint": "eslint --fix --ext .js,.ts ./src",
+    "stylelint": "stylelint \"**/*.css\" --fix"
   },
   "alias": {
     "core": "./src/core",
