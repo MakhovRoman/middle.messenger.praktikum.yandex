@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "webpack serve --config webpack.dev.js",
     "build": "webpack --config webpack.prod.js",
-    "start": "node ./server.js",
+    "start": "webpack --config webpack.prod.js node ./server.js",
     "test": "jest",
     "prepare": "husky install",
     "lint": "eslint --fix --ext .js,.ts ./src",
