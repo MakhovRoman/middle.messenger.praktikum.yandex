@@ -8,6 +8,7 @@
     "start": "webpack --config webpack.prod.js && node ./server.js",
     "test": "jest",
     "prepare": "husky install",
+    "pre-commit": "npm-run-all lint lint:css test",
     "lint": "eslint --fix --ext .js,.ts ./src",
     "stylelint": "stylelint \"**/*.css\" --fix"
   },
@@ -94,6 +95,11 @@
       "^api(.*)$": "<rootDir>/src/api$1",
       "^services(.*)$": "<rootDir>/src/services$1",
       "^tests(.*)$": "<rootDir>/src/tests$1"
+    }
+  },
+   "husky": {
+    "hooks": {
+      "pre-commit": "npm-run-all test lint:all"
     }
   }
 }

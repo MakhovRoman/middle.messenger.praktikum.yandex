@@ -6,6 +6,7 @@ import { AppState } from '../../typings/app';
 import { initRouter } from 'core/Router/Router';
 import { sleep } from 'helpers/sleep';
 import { BlockClass } from 'core/Block';
+import { PathRouter } from 'core/Router/PathRouter';
 
 type RenderBlockParams<T extends Record<string, unknown>> = {
 	Block: BlockClass<T>;
@@ -23,7 +24,7 @@ export async function renderBlock<T extends Record<string, unknown>>({
 	});
 
 	const store = new Store<AppState>({ ...defaultState, ...state });
-	const router = new MockedPathRouter();
+	const router = new PathRouter();
 
 	window.router = router;
 	window.store = store;
