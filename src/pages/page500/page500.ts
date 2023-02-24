@@ -3,14 +3,33 @@ import Block from '../../core/Block';
 export class Page500 extends Block {
     static cName = 'Page500';
 
-    componentDidUpdate() {
-        return window.store.getState().screen === 'page404';
+    constructor() {
+        super();
+
+        this.setProps({
+            onClick: this.onClick.bind(this)
+        })
     }
 
-    render() {
+    onClick(event: Event) {
+        event.preventDefault();
+        window.router.go('/messenger')
+    }
+
+    componentDidUpdate() {
+        return window.store.getState().screen === '500';
+    }
+
+    protected render() {
         return `
-            {{{ErrorPage title="500" cont="Мы уже фиксим"}}}
-        `
+            <main class="wrapper-page-error">
+                <div class="content-page-error">
+                    <h1 class="content-page-error__title">500</h1>
+                    <p class="content-page-error__paragraph">Мы уже фиксим</p>
+                    {{{BackToChatLink onClick=onClick}}}
+                </div>
+            </main>
+        `;
     }
 }
 

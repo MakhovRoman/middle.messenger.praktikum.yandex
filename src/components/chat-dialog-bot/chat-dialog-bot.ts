@@ -28,7 +28,6 @@ export class ChatDialogBot extends Block {
         })
     }
 
-
     protected render() {
         return `
             <form name="send-message" action="" class="chat__dialog-bot chat__dialog-row" onSubmit={{onSubmit}}>
@@ -98,7 +97,6 @@ export class ChatDialogBot extends Block {
                     </button>
                 </div>
             </form>
-
         `
     }
 }

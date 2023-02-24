@@ -108,7 +108,6 @@ export class Chats extends Block {
         })
     }
 
-
     componentDidUpdate() {
         return window.store.getState().screen === 'messenger';
     }
@@ -312,16 +311,12 @@ export class Chats extends Block {
                                         <div class="chat__info-title">
                                             <h3>{{title}}</h3>
                                         </div>
-                                        <div class="chat__info-date">
-
-                                        </div>
+                                        <div class="chat__info-date"></div>
                                     </div>
                                     <div class="chat__info-bot chat__info-row">
-
                                         <div class="chat__info-message">
                                             <p>{{last_message.content}}</p>
                                         </div>
-
                                         {{#if unread_message}}
                                         <div class="chat__info-unread">
                                             <span>{{unread_message}}</span>

@@ -3,12 +3,16 @@
   "version": "1.0.0",
   "description": "praktikum",
   "scripts": {
-    "dev": "parcel src/index.html --no-cache --open",
-    "start": "parcel build src/index.html && node ./server.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "parcel build src/index.html",
-    "startTS": "parcel src/index.html --no-cache --open",
-    "startRouting": "parcel src/index.html --no-cache --open"
+    "dev": "webpack serve --config webpack.dev.js",
+    "build": "webpack --config webpack.prod.js",
+    "start": "webpack --config webpack.prod.js && node ./server.js",
+    "test": "jest",
+    "prepare": "husky install",
+    "pre-commit": "npm-run-all lint:all test",
+    "lint:js": "eslint --fix --ext .js,.ts ./src",
+    "stylelint": "stylelint \"**/*.css\" --fix",
+    "lint:css": "prettier --list-different \"**/*.css\" && stylelint \"**/*.css\"",
+    "lint:all": "npm run lint:js && npm run lint:css"
   },
   "alias": {
     "core": "./src/core",
@@ -18,29 +22,81 @@
     "styles": "./src/styles/",
     "asserts": "./src/asserts/",
     "api": "./src/api/",
-    "services": "./src/services/"
+    "services": "./src/services/",
+    "tests": "./src/tests/"
   },
   "author": "Roman Makhov",
   "license": "ISC",
   "devDependencies": {
     "@anikin/parcel-transformer-handlebars": "1.0.9",
+    "@babel/core": "7.20.12",
+    "@babel/preset-env": "7.20.2",
+    "@babel/preset-typescript": "7.18.6",
     "@parcel/transformer-inline-string": "2.8.2",
+    "@testing-library/dom": "8.20.0",
+    "@testing-library/jest-dom": "5.16.5",
+    "@types/jest": "27.5.2",
     "@types/node": "18.11.17",
     "@typescript-eslint/eslint-plugin": "5.47.1",
     "@typescript-eslint/parser": "5.47.1",
+    "babel-loader": "9.1.2",
+    "clean-webpack-plugin": "4.0.0",
+    "css-loader": "6.7.3",
+    "dotenv": "16.0.3",
     "eslint": "8.30.0",
+    "handlebars-jest": "1.0.0",
+    "html-webpack-plugin": "5.5.0",
+    "husky": "8.0.3",
+    "identity-obj-proxy": "3.0.0",
+    "jest": "27.5.1",
+    "mini-css-extract-plugin": "2.7.2",
+    "msw": "1.0.1",
     "parcel": "2.8.2",
     "postcss": "8.4.20",
     "postcss-import": "15.1.0",
+    "postcss-loader": "7.0.2",
     "precss": "4.0.0",
+    "style-loader": "3.3.1",
     "stylelint": "14.16.1",
     "stylelint-config-standard": "29.0.0",
-    "typescript": "4.9.4"
+    "terser-webpack-plugin": "5.3.6",
+    "ts-loader": "9.4.2",
+    "typescript": "4.9.4",
+    "webpack": "5.75.0",
+    "webpack-cli": "5.0.1",
+    "webpack-dev-server": "4.11.1",
+    "webpack-merge": "5.8.0"
   },
   "dependencies": {
     "express": "4.18.2",
     "handlebars": "4.7.7",
     "nanoid": "4.0.0",
     "normalize.css": "8.0.1"
+  },
+  "jest": {
+    "testEnvironment": "jsdom",
+    "setupFiles": [
+      "<rootDir>/src/tests/setupEnv.ts"
+    ],
+    "setupFilesAfterEnv": [
+      "<rootDir>/src/tests/setup.ts"
+    ],
+    "transform": {
+      "\\.hbs$": "handlebars-jest",
+      "^.+\\.[t|j]sx?$": "babel-jest"
+    },
+    "moduleNameMapper": {
+      "\\.(png|webp)$": "<rootDir>/src/tests/fileMock.ts",
+      "\\.(css|jpeg|jpg|svg)$": "identity-obj-proxy",
+      "^core(.*)$": "<rootDir>/src/core$1",
+      "^components(.*)$": "<rootDir>/src/components$1",
+      "^helpers(.*)$": "<rootDir>/src/helpers$1",
+      "^pages(.*)$": "<rootDir>/src/pages$1",
+      "^styles(.*)$": "<rootDir>/src/styles$1",
+      "^asserts(.*)$": "<rootDir>/src/asserts$1",
+      "^api(.*)$": "<rootDir>/src/api$1",
+      "^services(.*)$": "<rootDir>/src/services$1",
+      "^tests(.*)$": "<rootDir>/src/tests$1"
+    }
   }
 }

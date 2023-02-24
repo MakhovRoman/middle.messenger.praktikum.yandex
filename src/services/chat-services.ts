@@ -1,12 +1,9 @@
-import { Dispatch } from 'core/Store';
-import { AppState, DispatchStateHandler } from '../../typings/app';
+import { DispatchStateHandler } from '../../typings/app';
 import apiHasError from 'helpers/apiHasError';
 import chatAPI from 'api/chatsAPI';
 import usersAPI from 'api/usersAPI';
 import { checkActiveChat } from 'helpers/checkActiveChat';
 import hasError from 'helpers/apiHasError';
-
-type T = Record<string, unknown>;
 
 type ChatCreatePayload = {
     data: string
@@ -302,12 +299,6 @@ export const openChat: DispatchStateHandler<OpenChatPayload> = async (
                 } else {
                     window.store.dispatch({
                         messageContent: null,
-                        // chatDialogContent: '',
-                        // disableMeetingScreen: '',
-                        // currentChat: null,
-                        // currentChatAvatar: '',
-                        // currentChatTitle: '',
-                        // toolsActive: ''
                     });
                 }
 

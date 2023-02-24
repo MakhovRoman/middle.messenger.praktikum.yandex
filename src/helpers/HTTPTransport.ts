@@ -4,7 +4,6 @@ export const enum METHODS  {
     POST = 'POST',
     DELETE = 'DELETE'
 };
-
 interface OptionsType {
     headers?: {[x:string]: string}
     data?: Record<string, unknown>
@@ -15,11 +14,7 @@ interface OptionsType {
     body?: Document | XMLHttpRequestBodyInit | null;
 }
 
-// type OptionsTypeGET = Omit<OptionsType, 'method' | 'body'>;
-// type OptionsTypeNotGET = Omit<OptionsType, 'method' | 'data'>;
-
 type HTTPMethodType = (url: string, options?: OptionsType) => Promise<unknown>
-
 
 function queryStringify(data: Record<string, unknown>) {
     return '?' + Object
@@ -61,11 +56,6 @@ export class HTTPTransport {
             );
     };
 
-    // PUT, POST, DELETE
-
-    // options:
-    // headers — obj
-    // data — obj
     request = (url:string, options:OptionsType , timeout = 5000) => {
         const {headers = {}, data, responseType = 'json', method} = options;
 

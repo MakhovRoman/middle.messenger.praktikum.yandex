@@ -17,7 +17,6 @@ export class GoToRegistration extends Block {
     }
 
     protected render() {
-
         return `
             <button class="link back-to__link" onNavigateNext={{onNavigateNext}}>Нет аккаунта?</button>
         `

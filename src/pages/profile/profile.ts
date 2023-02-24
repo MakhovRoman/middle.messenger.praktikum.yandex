@@ -423,11 +423,11 @@ export class Profile extends Block {
                             status=status
                         }}}
                     </div>
-
                     <div class="profile__submit" style="display: {{status_submit}}">
                         {{{Button
                             text="Поменять"
                             onSubmit=onSubmit
+                            dataTestId="change-profile-button"
                         }}}
                     </div>
                 </div>
@@ -438,6 +438,7 @@ export class Profile extends Block {
                         title="Изменить данные"
                         class="back-to__link"
                         onClick=onClick
+                        dataTestId="change-user-data"
                     }}}
                 </div>
                 <div class="profile__item" style="display: {{status_link}}">

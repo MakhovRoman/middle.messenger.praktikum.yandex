@@ -35,7 +35,6 @@ export class ChatMessageGroup extends Block {
                             <span>11:56</span>
                         </div>
                     </div>
-
                 </div>
                 <div class="chat__message-out chat__message-wrapper">
                     <div class="chat__message-content">

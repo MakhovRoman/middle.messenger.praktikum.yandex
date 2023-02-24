@@ -7,7 +7,6 @@ type SignInRequestType = {
     password: string
 }
 
-
 class AuthAPI extends BaseAPI {
     signUp(obj: Record<string, unknown>) {
         return new HTTPTransport().post(`${URL.SIGN_UP}`, {

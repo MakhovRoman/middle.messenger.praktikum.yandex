@@ -1,4 +1,3 @@
-import input from 'components/input';
 import { ValidateRuleType } from './validateForm';
 import { validateForm } from './validateForm';
 
@@ -160,7 +159,6 @@ export const messageOutput = (props: MessageOutputProps) => {
     }
 
     if (props.type === MessageOutputTypes.Submit) {
-        console.log(props)
         props.event.preventDefault();
 
         let authorizationData!: AuthorizationDataType;

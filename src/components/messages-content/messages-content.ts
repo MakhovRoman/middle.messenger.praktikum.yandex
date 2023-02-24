@@ -1,5 +1,4 @@
 import { Block } from 'core';
-import template from './messages-content.hbs'
 import { withStore } from 'helpers/withStore';
 
 type MessagesContentProps = {
@@ -8,14 +7,13 @@ type MessagesContentProps = {
 
   export class MessagesContent extends Block {
     static cName = 'MessagesContent';
-    // eslint-disable-next-line no-useless-constructor
+
     constructor(props:MessagesContentProps) {
       super(props);
 
 
     }
 
-    // eslint-disable-next-line class-methods-use-this
     render() {
       return `
               {{#each messageContent}}

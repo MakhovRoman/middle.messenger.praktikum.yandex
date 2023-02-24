@@ -1,20 +1,29 @@
 import Block from 'core/Block';
-import template from 'bundle-text:./button.hbs';
 
 interface ButtonProps {
     text: string;
     name?: string;
+    dataTestId?: string,
     onSubmit?: () => void;
     isLink: boolean
 }
 
 export class Button extends Block {
     static cName = 'Button';
-    constructor({text, name, isLink, onSubmit}: ButtonProps) {
-        super({text, name, isLink, events: {click: onSubmit}});
+    constructor({onSubmit, ...props}: ButtonProps) {
+        super({
+            ...props,
+            events: {click: onSubmit}
+        });
     }
 
     protected render() {
-        return template;
+        return `
+            <button
+                type="submit"
+                {{#if dataTestId}}data-testid="{{dataTestId}}"{{/if}}
+                class="button button-submit">{{text}}
+            </button>
+        `;
     }
 }

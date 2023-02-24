@@ -214,10 +214,11 @@
 
     &-tools {
         width: 210px;
-        height: 90px;
+        height: fit-content;
         right: 0;
         top: 65px;
         display: none;
+        padding-bottom: 0;
 
         &_active {
             display: flex;

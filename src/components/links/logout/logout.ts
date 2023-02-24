@@ -17,9 +17,8 @@ export class LogoutLink extends Block {
     }
 
     protected render() {
-
         return `
-            <button class="back-to__link profile__exit" onLogout={{onLogout}}>Выйти</button>
+            <button class="back-to__link profile__exit" data-testid="logout-button" onLogout={{onLogout}}>Выйти</button>
         `
     }
 }

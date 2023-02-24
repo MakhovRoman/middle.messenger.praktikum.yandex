@@ -13,6 +13,7 @@ export function merge(dst: PlainObject, ...args: PlainObject[]) {
           const distValue = dst[p];
 
           if (isPlainObject(srcValue) && (isPlainObject(distValue) || typeof distValue === 'undefined')) {
+            //@ts-expect-error
             dst[p] = merge(distValue || {}, srcValue);
           } else if (Array.isArray(srcValue) && (Array.isArray(distValue) || typeof distValue === 'undefined')) {
             dst[p] = [...(distValue || []), ...srcValue];
