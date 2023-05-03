@@ -13,7 +13,7 @@
         <img src="https://img.shields.io/badge/Render-%46E3B7.svg?style=for-the-badge&logo=render&logoColor=white">
     </a>
 </p>
-<h2>Srcipts</h2>
+<h2>Scripts</h2>
 <b>Development</b>  <code> npm run dev </code>
 <br>
 <b>Production</b>  <code> npm run build </code>
