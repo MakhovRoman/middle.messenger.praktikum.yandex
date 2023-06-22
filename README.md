@@ -4,15 +4,31 @@
         Яндекс.Практикум
     </a>
 </h2>
-<br>
-<p>Проект развернут на: <br>
-    <a href="https://deploy--creative-truffle-ef04cb.netlify.app/">
-        <img src="https://img.shields.io/badge/netlify-%23000000.svg?style=for-the-badge&logo=netlify&logoColor=#00C7B7">
-    </a>
-    <a href="https://chat-24jy.onrender.com/">
-        <img src="https://img.shields.io/badge/Render-%46E3B7.svg?style=for-the-badge&logo=render&logoColor=white">
-    </a>
-</p>
+
+![image](https://github.com/MakhovRoman/middle.messenger.praktikum.yandex/assets/70774476/b1ef9d3c-4e01-42f5-9a2f-ad8e1e5a0328)
+
+![image](https://github.com/MakhovRoman/middle.messenger.praktikum.yandex/assets/70774476/93c91afe-9066-43aa-8385-59c440e45f8c)
+
+![image](https://github.com/MakhovRoman/middle.messenger.praktikum.yandex/assets/70774476/a7a04deb-0b48-473f-b993-68d4f7f68553)
+
+<h2>Deploy</h2>
+<a href="https://deploy--creative-truffle-ef04cb.netlify.app/">
+	<img src="https://img.shields.io/badge/netlify-%23000000.svg?style=for-the-badge&logo=netlify&logoColor=#00C7B7">
+</a>
+<a href="https://chat-24jy.onrender.com/">
+	<img src="https://img.shields.io/badge/Render-%46E3B7.svg?style=for-the-badge&logo=render&logoColor=white">
+</a>
+
+<h3>Функциональность</h3>
+<ul>
+	<li>Авторизация и регистрация пользователя</li>
+	<li>Изменение профиля</li>
+	<li>Изменение аватарки</li>
+	<li>Создание чата</li>
+	<li>Добавление пользователя в чат</li>
+	<li>Отправка и получение текстовых сообщений по WebSocket</li>
+</ul>
+
 <h2>Scripts</h2>
 <b>Development</b>  <code> npm run dev </code>
 <br>
